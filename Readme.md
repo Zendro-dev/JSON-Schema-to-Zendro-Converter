@@ -4,7 +4,10 @@
 
 The **JSON-Schema to Zendro Converter** automatically transforms data-models schema defined in JSON-Schema into Zendro definition files (Zendro code generator input files). This allows users to leverage JSON-Schema to seamlessly generate a fully functional GraphQL server with complete [CRUD](https://en.wikipedia.org/wiki/Create,_read,_update_and_delete) support, distributed (cloud) deployment capabilities, full [OAuth2-compliant](https://oauth.net/2/) authentication and authorization, and an optional administrative graphical user interface.  
 
-**Note:** The converter applies certain expectations and minor restrictions to the JSON-Schema input to ensure a successful transformation into Zendro data model definitions.  
+**Notes:**
+
+- The converter applies certain expectations and minor restrictions to the JSON-Schema input to ensure a successful transformation into Zendro data model definitions.
+- The converter was originally developed for and tested on the full [**Breeding-API (BrApi) JSON-Schema (v2.1)**](https://brapi.org/) definitions. The **Breeding API** provides a standardized interface for managing, analyzing, and sharing breeding data, including genotypic and phenotypic information.   
 
 Chapters:
 - [Installation](#installation)

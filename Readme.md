@@ -1,7 +1,10 @@
-# Zendro model converter
+# JSON-Schema to Zendro Converter
 
-This project was developed by a student at the Technical University of Bingen.
-The aim of the project is to develop a converter that reads BrAPI JSON model schemas and translates them into a Zendro-compliant model schema.
+[JSON-Schema](https://json-schema.org/) is a declarative language for defining the structure, constraints, and validation rules of JSON data. It allows developers to enforce data integrity, document APIs, and enable automated validation of JSON objects. Common use cases include API request validation, configuration file validation, and ensuring data consistency in distributed systems. JSON Schema supports data types, required fields, pattern matching, and complex structures like nested objects and arrays.
+
+The **JSON-Schema to Zendro Converter** automatically transforms data-models schema defined in JSON-Schema into Zendro definition files (Zendro code generator input files). This allows users to leverage JSON-Schema to seamlessly generate a fully functional GraphQL server with complete CRUD support, distributed (cloud) deployment capabilities, full [OAuth2-compliant](https://oauth.net/2/) authentication and authorization, and an optional administrative graphical user interface.  
+
+**Note:** The converter applies certain expectations and minor restrictions to the JSON-Schema input to ensure a successful transformation into Zendro data model definitions.  
 
 Chapters:
 - [Installation](#installation)

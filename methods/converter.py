@@ -8,7 +8,7 @@ from pathlib import Path
 ##############################
 
 
-BrAPI_TYPES = ["string", "integer", "boolean", "number"]
+JSONSCHEMA_TYPES = ["string", "integer", "boolean", "number"]
 ZENDRO_TYPES = {
     'string': 'String',
     'integer': 'Int',
@@ -22,11 +22,11 @@ ZENDRO_TYPES = {
 # Create parser for command-line options
 parser = argparse.ArgumentParser(
     prog='Converter',
-    description='Converts BrAPI json-schemas to a Zendro data model'
+    description='Converts json-schemas to a Zendro data model'
 )
 
 parser.add_argument('-i', '--input-path',
-                    help='Path to the BrAPI schemas.',
+                    help='Path to the json schemas.',
                     required=True)
 
 parser.add_argument('-o', '--output-path',
@@ -50,9 +50,46 @@ parser.add_argument('-t', '--primary-key-type',
                     choices=['Int', 'String'],
                     default='String')
 
+# Define a database mapping option
+parser.add_argument('-d', '--database-mapping',
+                    help=('Mapping of models to specific databases. '
+                          'Models not listed here will use the storage type set by -s. '
+                          'Format: "sql=model_1,model_2;mongodb=model_3".'))
+
+
 # Parse arguments
 args = parser.parse_args()
 
+# Function to parse the database mapping string
+def parse_database_mapping(mapping_str):
+    valid_storage_types = parser._option_string_actions['-s'].choices
+    db_mapping = {}
+
+    if mapping_str:
+        pairs = mapping_str.split(';')
+        for pair in pairs:
+            if '=' in pair:
+                db, models = pair.split('=')
+                db = db.strip().lower()
+
+                # Check if the storage type is valid
+                if db not in valid_storage_types:
+                    print(f"Error: '{db}' is not a valid storage type.")
+                    print(f"Available options: {', '.join(valid_storage_types)}")
+                    return None  # Return None to indicate an error
+
+                for model in models.split(','):
+                    db_mapping[model.strip().lower()] = db  
+
+    return db_mapping
+
+
+# Convert database mapping string into a dictionary
+database_mapping = parse_database_mapping(args.database_mapping)
+
+if database_mapping is None:
+    print("Exiting due to invalid storage type. Please check your input and try again.")
+    exit(1)  # Exit with an error code
 
 ##############################
 
@@ -83,7 +120,6 @@ def get_files(input_path):
     :param input_path: Path to the input files/directories
     :return: Returns all found files in the input hierarchy
     """
-
     # All found files
     input_files = []
 
@@ -115,7 +151,7 @@ def get_models(input_files):
                 for current_model in models:
                     files_data[current_model] = {}
                     files_data[current_model]['properties'] = models[current_model]['properties']
-                    files_data[current_model]['required'] = models[current_model]['required']
+                    # files_data[current_model]['required'] = models[current_model]['required']
 
         return files_data if files_data else None
 
@@ -208,7 +244,7 @@ def get_properties(input_model_properties, current_model):
                 "targetKey": target_key,
                 "sourceKey": source_key,
                 "keysIn": current_model.lower(),
-                "targetStorageType": args.storage_type
+                "targetStorageType": database_mapping.get(association_target.lower(), args.storage_type)
             }
 
         model_properties["attributes"].update(foreign_keys)
@@ -232,10 +268,10 @@ def get_property_type(input_property):
                         property_type = f'[ {ZENDRO_TYPES[input_property["items"]["items"]["type"]]} ]'
                     else:
                         property_type = f'[ {ZENDRO_TYPES[input_property["items"]["type"]]} ]'
-                if item_type in BrAPI_TYPES:
+                if item_type in JSONSCHEMA_TYPES:
                     property_type = ZENDRO_TYPES[item_type]
         else:
-            if input_property['type'] in BrAPI_TYPES:
+            if input_property['type'] in JSONSCHEMA_TYPES:
                 property_type = ZENDRO_TYPES[input_property['type']]
 
     return property_type
@@ -284,7 +320,7 @@ def write_json(output_models):
         for model in output_models:
             json_file = {
                 "model": model.lower(),
-                "storageType": args.storage_type,
+                "storageType": database_mapping.get(model.lower(), args.storage_type),
                 "attributes": output_models[model]["attributes"],
                 "associations": output_models[model]["associations"],
                 "internalId": output_models[model]["primary_key"]["Name"]

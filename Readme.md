@@ -21,10 +21,9 @@ Chapters:
 - [API Reference](#api-reference)
   - [Packages used](#packages-used)
   - [get_files](#get_files)
-  - [get_items](#get_items)
-  - [get_type](#get_type)
-  - [get_references](#get_references)
-  - [read_json](#read_json)
+  - [get_models](#get_models)
+  - [get_properties](#get_properties)
+  - [get_property_type](#get_property_type)
   - [write_json](#write_json)
   - [log](#log)
 - [Support](#support)
@@ -36,7 +35,7 @@ Chapters:
 Install the project with git
 
 ```bash
-  git clone https://github.com/LzLang/Zendro-Converter.git
+git clone https://github.com/Zendro-dev/JSON-Schema-to-Zendro-Converter.git
 ```
 The Python scripts are located in the `methods` subfolder.
 
@@ -47,8 +46,52 @@ The Python scripts are located in the `methods` subfolder.
 
 #### General Usage:
 ```bash
-python convert.py -i [input-path] -o [output-path] [other command-line arguments]
+python methods/convert.py -i [input-path] -o [output-path] [other command-line arguments]
 ```
+
+#### Command-Line Arguments
+
+The `Converter` script converts JSON schemas into Zendro data models. Below are the available arguments:
+
+### Required Arguments
+
+- `-i, --input-path`  
+  **Description:** Path to the JSON schemas.  
+  **Required:** Yes  
+
+- `-o, --output-path`  
+  **Description:** Path where the Zendro data models should be stored.  
+  **Required:** Yes  
+
+### Optional Arguments
+
+- `-s, --storage-type`  
+  **Description:** Type of storage where the model is stored.  
+  **Choices:**  
+  - `sql` (default)  
+  - `generic`  
+  - `zendro-server`  
+  - `cassandra`  
+  - `mongodb`  
+  - `neo4j`  
+  - `presto/trino`  
+  - `amazon-s3`  
+  - `distributed-data-model`  
+  - `adapter`  
+
+- `-p, --primary-key-name`  
+  **Description:** Name of the primary key.  
+
+- `-t, --primary-key-type`  
+  **Description:** Type of the primary key.  
+  **Choices:**  
+  - `Int`  
+  - `String` (default)  
+
+- `-d, --database-mapping`  
+  **Description:** Mapping of models to specific databases.  
+  **Format:** `"sql=model_1,model_2;mongodb=model_3"`  
+  **Note:** Models not listed here will use the storage type set by `-s`.  
 
 ---
 
@@ -233,78 +276,67 @@ Function returns all found files in the input hierachy.
 
 ---
 
-#### get_items
+#### get_models
+Get all models:
+
+```python
+get_models(input_files)
+```
+
+| Parameter | Type     | Description                |
+| :-------- | :------- | :------------------------- |
+| `input_files` | `list` | List of files to extract models from |
+
+Read in the given files and extract all models from it.\n
+Get a formatted dictionary of data models included in those files.
+
+Function returns the formatted dictionary of data models
+
+---
+
+#### get_properties
 Get all items/properties:
 ```python
-get_items(file_data)
+get_properties(input_model_properties, current_model)
 ```
 
 | Parameter | Type     | Description                       |
 | :-------- | :------- | :-------------------------------- |
-| `file_data`      | `dictionary` | Content of multiple json files as dictionary |
+| `input_model_properties`      | `dictionary` | Dictionary of all properties included in the current model |
+| `current_model`      | `string` | The name of the current model |
 
-Get a formatted dictionary of data models with Zendro compatible data types and references (Ready to be writen in json format).
+Get a formatted dictionary of data models with Zendro compatible data types and references.\n
+Ready to be writen in json format.
 
 Function returns a formatted dictionary of data models compatible to Zendro.
 
 ---
 
-#### get_type
+#### get_property_type
 Check for Zendro compatible types:
 ```python
-get_types(item)
+get_property_type(input_property)
 ```
 
 | Parameter | Type     | Description                       |
 | :-------- | :------- | :-------------------------------- |
-| `item`      | `dictionary` | Property/Attribute of a model definition |
+| `input_property`      | `dictionary` | An item from a json file |
 
 Function returns a Zendro compatible type or none
 
 ---
 
-#### get_references
-Get all associations of a given property:
-```python
-get_references(item)
-```
-
-| Parameter | Type     | Description                       |
-| :-------- | :------- | :-------------------------------- |
-| `item`      | `dictionary` | Property/Attribute of a model definition |
-
-Function returns a dictionary of the attributes associations or none.
-
----
-
-#### read_json
-Read in a json file:
-```python
-read_json(files, storage_type, primary_key_name, primary_key_type)
-```
-
-| Parameter | Type     | Description                       |
-| :-------- | :------- | :-------------------------------- |
-| `files`      | `List` | List of json files to be read |
-| `storage_type`      | `String` | A Zendro compatible storage type (used database) |
-| `primary_key_name`      | `String` | Name of the primary key |
-| `primary_key_type`      | `dictionary` | Type of the primary key (Int or String) 
-
-Function returns a dictionary of data model definitions.
-
----
-
 #### write_json
-Write the data to a json file:
+Writes the passed models to their own json file:
+
 ```python
-write_json(file_data, output_path, storage_type)
+write_json(output_models)
 ```
 
 | Parameter | Type     | Description                       |
 | :-------- | :------- | :-------------------------------- |
-| `file_data`      | `dictionary` | A dictionary filled with model definitions |
-| `output_path`      | `String` | Path where the converted files should be saved |
-| `storage_type`      | `String` | A Zendro compatible storage type (used database) |
+| `output_models`      | `dictionary` | Dictionary with model definitions compatible to Zendro |
+
 
 This function doesn't return anything.
 

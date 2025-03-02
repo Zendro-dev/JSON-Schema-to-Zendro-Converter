@@ -7,12 +7,12 @@
 ### Supported Databases
 Zendro is compatible with the following databases:
 
-- **Relational databases** (SQLite, PostgreSQL)si 
-- **Document-based databases** (MongoDB)no
-- **Graph-based databases** (Neo4J)si 
-- **Wide column stores** (Cassandra)si
-- **Data lakes (read-only)** (Presto, Trino)no
-- **Comma-separated value (CSV) tables in cloud storage** (Amazon S3)no
+- **Relational databases** (SQLite, PostgreSQL)
+- **Document-based databases** (MongoDB)
+- **Graph-based databases** (Neo4J)
+- **Wide column stores** (Cassandra)
+- **Data lakes (read-only)** (Presto, Trino)
+- **Comma-separated value (CSV) tables in cloud storage** (Amazon S3)
 
 These options provide flexibility in choosing the right database based on project requirements.
 

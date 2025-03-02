@@ -164,6 +164,7 @@ To generate and execute a specific migration, ensure that your database is acces
 Then, navigate to the `./graphql-server/` directory and execute:
 
 ```
+npm install
 node utils/run_migrations.js <path_to_migration_model> up
 ```
 

@@ -95,6 +95,10 @@ The `Converter` script converts JSON schemas into Zendro data models. Below are 
 
 ---
 
+#### JSON Schema Requirements
+
+---
+
 #### Regular example:
 ```bash
 python convert.py -i "../BrAPI-Schema" -o "../results"

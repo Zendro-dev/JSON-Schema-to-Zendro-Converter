@@ -1,3 +1,31 @@
+# Guides for Using Zendro and the JSON Schema to Zendro Converter Tool
+
+## Zendro
+
+**[Zendro](https://zendro-dev.github.io/)** is a tool for quickly creating a customized data warehouse. Define data models and their storage location, and Zendro automatically generates two standardized interfaces: an efficient GraphQL API and an intuitive SPA based on Material Design. The API allows connections from any programming language or data analysis pipeline via HTTP requests. Additionally, Zendro enables data distribution across multiple databases without losing relationships between records.
+
+### Supported Databases
+Zendro is compatible with the following databases:
+
+- **Relational databases** (SQLite, PostgreSQL)si 
+- **Document-based databases** (MongoDB)no
+- **Graph-based databases** (Neo4J)si 
+- **Wide column stores** (Cassandra)si
+- **Data lakes (read-only)** (Presto, Trino)no
+- **Comma-separated value (CSV) tables in cloud storage** (Amazon S3)no
+
+These options provide flexibility in choosing the right database based on project requirements.
+
+## JSON Schema to Zendro Converter
+
+The [**JSON-Schema to Zendro Converter**](https://github.com/Zendro-dev/JSON-Schema-to-Zendro-Converter) automatically transforms data-models schema defined in JSON-Schema into Zendro definition files (Zendro code generator input files). This allows users to leverage JSON-Schema to seamlessly generate a fully functional GraphQL server with complete [CRUD](https://en.wikipedia.org/wiki/Create,_read,_update_and_delete) support, distributed (cloud) deployment capabilities, full [OAuth2-compliant](https://oauth.net/2/) authentication and authorization, and an optional administrative graphical user interface.  
+
+This converter and manuals are designed to work with any JSON Schema that adheres to the necessary requirements. While the development and testing of this tool were conducted using BrAPI as a reference, its functionality extends to any compatible JSON Schema.
+
+In this guide, we demonstrate how to use the converter with a practical example based on BrAPI. However, the same approach applies to any JSON Schema that meets the prerequisites.
+
+Additionally, this section provides instructions on setting up a zendro instance using the listed databases for any JSON Schema.
+
 ## What can I find in this directory?
 
 ### Manuals

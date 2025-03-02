@@ -8,7 +8,7 @@
 - Follow the [instructions](https://github.com/Zendro-dev/JSON-Schema-to-Zendro-Converter?tab=readme-ov-file#installation) to install the JSON-Schema to Zendro Converter.
 
 ### 3. Use the converter in your JSON Schemas
-Before using the converter on your schemas, please ensure that your models meet the necessary requirements for the converter to work. Check the details [here](https://github.com/Zendro-dev/JSON-Schema-to-Zendro-Converter?tab=readme-ov-file#json_schema_requirements).
+Before using the converter on your schemas, please ensure that your models meet the necessary requirements for the converter to work. Check the details [here](https://github.com/Zendro-dev/JSON-Schema-to-Zendro-Converter?tab=readme-ov-file#json-schema-requirements).
 
 -  General Usage:
     ```bash
@@ -56,6 +56,20 @@ Before using the converter on your schemas, please ensure that your models meet 
     **Description:** Mapping of models to specific databases.  
     **Format:** `"sql=model_1,model_2;mongodb=model_3"`  
     **Note:** Models not listed here will use the storage type set by `-s`.  
+
+- For example, to convert BrAPI models you can execute:
+    ```
+    python methods/converter.py -i brapi_input_example/ -o results_bd/
+    ```
+    This command will generate sql models.
+
+    To use different storage types for specific models, list them in the `-d` argument as follows:
+
+    ```
+    python methods/converter.py -i brapi_input_example/ -o results_distributed/ -d "mongodb=trial,trait;cassandra=study"
+    ```
+
+    This command will generate models with `trial` and `trait` using `MongoDB` as the storage type, `study` with `Cassandra`, and all other models using `SQL` (default for the `-s` argument). You can use the `-s` argument to specify a different general storage type.
 
 ### 4. Create Zendro instance
 
@@ -145,7 +159,7 @@ We recommend to check [this guide](https://zendro-dev.github.io/setup_root.html#
 
 In the `./graphql-server/migrations/` folder, you'll find the migration files that sets up each model. If you choose not to use Zendro, you can still use the migrations to generate the complete GraphQL schema and set up the database.
 
-To generate and execute a specific migration, ensure that your database is accessible. You can do this starting Zendro only with the database service. Modify `./docker-compose-dev.yml` or `./docker-compose-prod.yml` as needed.
+To generate and execute a specific migration, ensure that your database is accessible. You can do this starting Zendro only with the database service. Modify `./docker-compose-dev.yml` or `./docker-compose-prod.yml` as needed and start Zendro.
 
 Then, navigate to the `./graphql-server/` directory and execute:
 
@@ -162,6 +176,8 @@ node utils/run_migrations.js migrations/2025-02-23T17_37_17.804Z#schema_to_text_
 ```
 
 This migration will generate a file named `schema.graphql` in the `graphql-server/` directory.
+
+In [zendro_schema_output.graphql](https://github.com/Zendro-dev/Zendro-Converter/blob/main/manuals/zendro_schema_output.graphql), you will find the example file that Zendro will generate when you run the migration as indicated.
 
 ### 11. Technologies that do not come with a schema creation and can be used just with the configs
 

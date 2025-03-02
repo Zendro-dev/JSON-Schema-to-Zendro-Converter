@@ -105,6 +105,7 @@ def main():
     # Extract properties from all models
     output_models = {}
     for model in input_models:
+        print(model)
         output_models[model] = get_properties(input_models[model]["properties"], model)
 
     #test_models(output_models)
@@ -149,6 +150,7 @@ def get_models(input_files):
             with open(file, "r") as open_file:
                 models = json.load(open_file)['$defs']
                 for current_model in models:
+                    print(current_model)
                     files_data[current_model] = {}
                     files_data[current_model]['properties'] = models[current_model]['properties']
                     # files_data[current_model]['required'] = models[current_model]['required']

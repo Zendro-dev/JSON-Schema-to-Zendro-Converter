@@ -8,25 +8,8 @@ The **JSON-Schema to Zendro Converter** automatically transforms data-models sch
 
 **Notes:**
 
-- The converter applies certain expectations and minor restrictions to the JSON-Schema input to ensure a successful transformation into Zendro data model definitions.
+- The converter applies certain expectations and minor [restrictions](https://github.com/Zendro-dev/JSON-Schema-to-Zendro-Converter?tab=readme-ov-file#json-schema-requirements) to the JSON-Schema input to ensure a successful transformation into Zendro data model definitions.
 - The converter was originally developed for and tested on the full [**Breeding-API (BrApi) JSON-Schema (v2.1)**](https://brapi.org/) definitions. The **Breeding API** provides a standardized interface for managing, analyzing, and sharing breeding data, including genotypic and phenotypic information.   
-
-Chapters:
-- [Installation](#installation)
-- [Usage/Examples](#usageexamples)
-  - [General Usage](#general-usage)
-  - [Regular example](#regular-example)
-  - [Custom primary key and type](#custom-primary-key-and-type)
-  - [Associations](#associations)
-- [API Reference](#api-reference)
-  - [Packages used](#packages-used)
-  - [get_files](#get_files)
-  - [get_models](#get_models)
-  - [get_properties](#get_properties)
-  - [get_property_type](#get_property_type)
-  - [write_json](#write_json)
-  - [log](#log)
-- [Support](#support)
 
 ---
 
@@ -97,6 +80,69 @@ The `Converter` script converts JSON schemas into Zendro data models. Below are 
 
 #### JSON Schema Requirements
 
+The schema must meet certain characteristics for the converter to function properly. Below is an example schema to help adapt your models to the required input format:  
+
+1. The schema must include the `$defs` key, where the entire model is defined.  
+2. Inside `$defs`, the model name should be defined, and within the model name, there must be a key called `properties`.  
+3. Inside `properties`, the "columns" of the model should be defined. It is not necessary to define an `id` as it can be specified using the `-p` and `-t` arguments of the converter. The data type must be specified, and ideally, a description should also be included so it can be used in the GraphQL schema in Zendro.  
+4. Associations must include:  
+   - **title**: Name of the association  
+   - **description**: Description of the association  
+   - **referencedAttribute**: Name of the association in the related model  
+   - **relationshipType**: Type of relationship  
+     - one-to-many  
+     - many-to-many  
+     - one-to-one  
+     - many-to-one  
+   - **items**:  
+     - **$ref**: File where the related model is located  
+     - **description**  
+   - **type**:  
+     - Default value  
+     - Data type  
+
+```
+{
+    "$defs": {
+        "<model_name>": {
+            "properties": {
+                "<model_id>": {
+                    "description": "",
+                    "type": ""
+                },
+                "<property1>": {
+                    "description": "",
+                    "type": [
+                        "null",
+                        "<data_type>"
+                    ]
+                },
+                "property2": {
+                    "description": "",
+                    "type": [
+                        "null",
+                        "<data_type>"
+                    ]
+                },
+                "<model_association_1>": {
+                    "title": "<association_name>",
+                    "description": "",
+                    "referencedAttribute": "<model_name>",
+                    "relationshipType": "<one-to-many|many_to_many|one_to_one|many_to_one>",
+                    "items": {
+                        "$ref": "<associated_model_location>",
+                        "description": ""
+                    },
+                    "type": [
+                        "null",
+                        "<data_type>"
+                    ]
+                }
+            }
+        }
+    }
+}
+```
 ---
 
 #### Regular example:
@@ -109,90 +155,49 @@ JSON Schema input:
 ```json
 {
     "$defs": {
-        "Study": {
+        "Season": {
             "properties": {
-                "active": {
-                    "description": "A flag to indicate if a Study is currently active and ongoing",
-                    "type": [
-                        "null",
-                        "boolean"
-                    ]
+                "seasonDbId": {
+                    "description": "The ID which uniquely identifies a season. For backward compatibility it can be a string like '2012', '1957-2004'",
+                    "type": "string"
                 },
-                "additionalInfo": {
-                    "additionalProperties": {
-                        "type": "string"
-                    },
-                    "description": "A free space containing any additional information related to a particular object. A data source may provide any JSON object, unrestricted by the BrAPI specification.",
-                    "type": [
-                        "null",
-                        "object"
-                    ]
-                },
-                "commonCropName": {
-                    "description": "Common name for the crop associated with this study",
+                "seasonName": {
+                    "description": "Name of the season. ex. 'Spring', 'Q2', 'Season A', etc.",
                     "type": [
                         "null",
                         "string"
                     ]
                 },
-                "contacts": {
-                    "description": "List of contact entities associated with this study",
+                "year": {
+                    "description": "The 4 digit year of the season.",
+                    "type": [
+                        "null",
+                        "integer"
+                    ]
+                },
+                "observations": {
+                    "title": "observations",
+                    "description": "Observations associated to this season",
+                    "referencedAttribute": "season",
+                    "relationshipType": "one-to-many",
                     "items": {
-                        "properties": {
-                            "contactDbId": {
-                                "description": "The ID which uniquely identifies this contact\n\nMIAPPE V1.1 (DM-33) Person ID - An identifier for the data submitter. If that submitter is an individual, ORCID identifiers are recommended.",
-                                "type": "string"
-                            },
-                            "email": {
-                                "description": "The contacts email address\n\nMIAPPE V1.1 (DM-32) Person email - The electronic mail address of the person.",
-                                "type": [
-                                    "null",
-                                    "string"
-                                ]
-                            },
-                            "instituteName": {
-                                "description": "The name of the institution which this contact is part of\n\nMIAPPE V1.1 (DM-35) Person affiliation - The institution the person belongs to",
-                                "type": [
-                                    "null",
-                                    "string"
-                                ]
-                            },
-                            "name": {
-                                "description": "The full name of this contact person\n\nMIAPPE V1.1 (DM-31) Person name - The name of the person (either full name or as used in scientific publications)",
-                                "type": [
-                                    "null",
-                                    "string"
-                                ]
-                            },
-                            "orcid": {
-                                "description": "The Open Researcher and Contributor ID for this contact person (orcid.org)\n\nMIAPPE V1.1 (DM-33) Person ID - An identifier for the data submitter. If that submitter is an individual, ORCID identifiers are recommended.",
-                                "type": [
-                                    "null",
-                                    "string"
-                                ]
-                            },
-                            "type": {
-                                "description": "The type of person this contact represents (ex: Coordinator, Scientist, PI, etc.)\n\nMIAPPE V1.1 (DM-34) Person role - Type of contribution of the person to the investigation",
-                                "type": [
-                                    "null",
-                                    "string"
-                                ]
-                            }
-                        },
-                        "required": [
-                            "contactDbId"
-                        ],
-                        "type": "object"
+                        "$ref": "Observation.json#/$defs/Observation",
+                        "description": "Observation"
                     },
                     "type": [
                         "null",
                         "array"
                     ]
                 }
-            }
+            },
+            "required": [
+                "seasonDbId"
+            ],
+            "title": "Season",
+            "type": "object"
         }
     },
-    "$id": "https://brapi.org/Specification/BrAPI-Schema/BrAPI-Core/Study.json",
+    "$id": "https://brapi.org/Specification/BrAPI-Schema/BrAPI-Core/Season.json",
     "$schema": "http://json-schema.org/draft/2020-12/schema"
 }
 ```
@@ -200,19 +205,36 @@ JSON Schema input:
 Zendro compatible output:
 ```json
 {
-    "model": "Study",
+    "model": "season",
     "storageType": "sql",
     "attributes": {
-        "study_ID": "String",
-        "active": {
-            "type": "Boolean",
-            "description": "A flag to indicate if a Study is currently active and ongoing"
+        "seasonDbId": {
+            "type": "[ String ]",
+            "description": "The ID which uniquely identifies a season. For backward compatibility it can be a string like '2012', '1957-2004'"
         },
-        "commonCropName": {
+        "seasonName": {
             "type": "String",
-            "description": "Common name for the crop associated with this study"
+            "description": "Name of the season. ex. 'Spring', 'Q2', 'Season A', etc."
+        },
+        "year": {
+            "type": "Int",
+            "description": "The 4 digit year of the season."
+        },
+        "observations_IDs": "[ String ]"
+    },
+    "associations": {
+        "observations": {
+            "type": "one_to_many",
+            "implementation": "foreignkeys",
+            "reverseAssociation": "season",
+            "target": "observation",
+            "targetKey": "season_ID",
+            "sourceKey": "observations_IDs",
+            "keysIn": "season",
+            "targetStorageType": "sql"
         }
-    }
+    },
+    "internalId": "seasonDbId"
 }
 ```
 
@@ -226,23 +248,60 @@ python convert.py -i "../BrAPI-Schema" -o "../results" -p "github" -t "Int"
 Zendro compatible output:
 ```json
 {
-    "model": "Study",
+    "model": "season",
     "storageType": "sql",
     "attributes": {
-        "study_github_ID": "Int",
-        "active": {
-            "type": "Boolean",
-            "description": "A flag to indicate if a Study is currently active and ongoing"
+        "github": {
+            "type": "[ Int ]",
+            "description": "The ID which uniquely identifies a season. "
         },
-        "commonCropName": {
+        "seasonName": {
             "type": "String",
-            "description": "Common name for the crop associated with this study"
+            "description": "Name of the season. ex. 'Spring', 'Q2', 'Season A', etc."
+        },
+        "year": {
+            "type": "Int",
+            "description": "The 4 digit year of the season."
+        },
+        "observations_IDs": "[ String ]"
+    },
+    "associations": {
+        "observations": {
+            "type": "one_to_many",
+            "implementation": "foreignkeys",
+            "reverseAssociation": "season",
+            "target": "observation",
+            "targetKey": "season_ID",
+            "sourceKey": "observations_IDs",
+            "keysIn": "season",
+            "targetStorageType": "sql"
         }
-    }
+    },
+    "internalId": "github"
 }
 ```
-As you can see, the primary key (here `study_github_ID`) contains the custom primary key name `github` and the data type is Integer.
+As you can see, the primary key (here `github`) is the custom primary key name `github` and the data type is Integer.
 Each generated data model contains the custom primary key name and is of the specified type.
+
+---
+
+#### Mapping of models to specific databases:
+
+To use different storage types for specific models, list them in the `-d` argument as follows:
+
+```bash
+python methods/converter.py -i brapi_input_example/ -o results_distributed/ -d "mongodb=trial,trait;cassandra=study"
+```
+
+This command will generate models with `trial` and `trait` using `MongoDB` as the storage type, `study` with `Cassandra`, and all other models using `SQL` (default for the `-s` argument). 
+
+You can use the `-s` argument to specify a different general storage type:
+
+```bash
+python methods/converter.py -i brapi_input_example/ -o results_distributed/ -s mongodb -d "neo4j=trial,trait;cassandra=study"
+```
+
+This command will generate models with `trial` and `trait` using `neo4j` as the storage type, `study` with `Cassandra`, and all other models using `mongodb` as specified in `-s` argument.
 
 ---
 

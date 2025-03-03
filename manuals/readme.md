@@ -22,13 +22,14 @@ The [**JSON-Schema to Zendro Converter**](https://github.com/Zendro-dev/JSON-Sch
 
 This converter and manuals are designed to work with any JSON Schema that adheres to the necessary requirements. While the development and testing of this tool were conducted using BrAPI as a reference, its functionality extends to any compatible JSON Schema.
 
-In this guide, we demonstrate how to use the converter with a practical example based on BrAPI. However, the same approach applies to any JSON Schema that meets the prerequisites.
-
-Additionally, this section provides instructions on setting up a zendro instance using the listed databases for any JSON Schema.
 
 ## What can I find in this directory?
 
 ### User guides
+
+In this guides, we demonstrate how to use the converter with a practical example based on BrAPI. However, the same approach applies to any JSON Schema that meets the [prerequisites](https://github.com/Zendro-dev/JSON-Schema-to-Zendro-Converter?tab=readme-ov-file#json-schema-requirements).
+
+Additionally, this section provides instructions on setting up a zendro instance using the listed databases for any JSON Schema.
 
 - [User Guide](https://github.com/Zendro-dev/JSON-Schema-to-Zendro-Converter/blob/main/manuals/How_to_use_converter_and_zendro.md#how-to-setup-zendro-using-the-supported-databases): Step-by-step instructions from installing Zendro and the converter to processing models and deploying a Zendro instance.
 

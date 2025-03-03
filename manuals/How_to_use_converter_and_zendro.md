@@ -1,5 +1,9 @@
 # How to setup Zendro using the supported databases
 
+In this guide, we demonstrate how to use the converter with a practical example based on BrAPI. However, the same approach applies to any JSON Schema that meets the [prerequisites](https://github.com/Zendro-dev/JSON-Schema-to-Zendro-Converter?tab=readme-ov-file#json-schema-requirements).
+
+Additionally, this section provides instructions on setting up a zendro instance using the [listed databases](https://github.com/Zendro-dev/JSON-Schema-to-Zendro-Converter/tree/main/manuals#supported-databases) for any JSON Schema.
+
 ### 1. Install Zendro
 - Verify that you have the [project requirements](https://zendro-dev.github.io/quickstart.html#project-requirements).
 - Follow the [instructions](https://zendro-dev.github.io/quickstart.html#step-1-installation) to install Zendro.

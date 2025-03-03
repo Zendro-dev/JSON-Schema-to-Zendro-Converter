@@ -84,7 +84,7 @@ The schema must meet certain characteristics for the converter to function prope
 
 1. The schema must include the `$defs` key, where the entire model is defined.  
 2. Inside `$defs`, the model name should be defined, and within the model name, there must be a key called `properties`.  
-3. Inside `properties`, the "columns" of the model should be defined. It is not necessary to define an `id` as it can be specified using the `-p` and `-t` arguments of the converter. The data type must be specified, and ideally, a description should also be included so it can be used in the GraphQL schema in Zendro.  
+3. Inside `properties`, the fields, or attributes ("columns" in relational databases) of the model should be defined. It is not necessary to define an `id` as it can be specified using the `-p` and `-t` arguments of the converter. The data type must be specified, and ideally, a description should also be included so it can be used in the GraphQL schema in Zendro.  
 4. Associations must include:  
    - **title**: Name of the association  
    - **description**: Description of the association  

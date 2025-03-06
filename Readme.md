@@ -86,18 +86,18 @@ The schema must meet certain characteristics for the converter to function prope
 2. Inside `$defs`, the model name should be defined, and within the model name, there must be a key called `properties`.  
 3. Inside `properties`, the fields, or attributes ("columns" in relational databases) of the model should be defined. It is not necessary to define an `id` as it can be specified using the `-p` and `-t` arguments of the converter. The data type must be specified, and ideally, a description should also be included so it can be used in the GraphQL schema in Zendro.  
 4. Associations must include:  
-   - **title**: Name of the association  
-   - **description**: Description of the association  
-   - **referencedAttribute**: Name of the association in the related model  
-   - **relationshipType**: Type of relationship  
+   - **title**: Name of the association. How the link between the model and the association is named.
+   - **description**: Description of the association. Ideally, a description should be included so it can be used in the GraphQL schema in Zendro.  
+   - **referencedAttribute**: The attribute in the related model that establishes the connection. 
+   - **relationshipType**:  The type of relationship between models. The possible values are:
      - one-to-many  
      - many-to-many  
      - one-to-one  
      - many-to-one  
    - **items**:  
-     - **$ref**: File where the related model is located  
-     - **description**  
-   - **type**:  
+     - **$ref**: The path to the related model's definition. This should follow JSON Schema reference syntax.
+     - **description**: A brief explanation of the association.
+   - **type**:  Defines the expected data type of the association. 
      - Default value  
      - Data type  
 

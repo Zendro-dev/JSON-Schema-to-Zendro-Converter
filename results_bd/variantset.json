@@ -2,42 +2,42 @@
     "model": "variantset",
     "storageType": "sql",
     "attributes": {
-        "additionalInfo_IDs": "[ String ]",
-        "alleleMatrices_IDs": "[ String ]",
-        "calls_IDs": "[ String ]",
-        "callSets_IDs": "[ String ]",
-        "analysis_IDs": "[ String ]",
-        "availableFormats_IDs": "[ String ]",
         "callSetCount": {
-            "type": "Int",
+            "type": "String",
             "description": "The number of CallSets included in this VariantSet"
         },
-        "externalReferences_IDs": "[ String ]",
-        "metadataFields_IDs": "[ String ]",
-        "referenceSet_ID": "String",
-        "study_ID": "String",
         "variantCount": {
-            "type": "Int",
+            "type": "String",
             "description": "The number of Variants included in this VariantSet"
         },
         "variantSetDbId": {
-            "type": "[ String ]",
+            "type": "String",
             "description": "The unique identifier for a VariantSet"
         },
         "variantSetName": {
             "type": "String",
             "description": "The human readable name for a VariantSet"
         },
+        "additionalInfo_ID": "String",
+        "alleleMatrices_IDs": "[ String ]",
+        "calls_IDs": "[ String ]",
+        "callSets_IDs": "[ String ]",
+        "analysis_IDs": "[ String ]",
+        "availableFormats_IDs": "[ String ]",
+        "externalReferences_IDs": "[ String ]",
+        "metadataFields_IDs": "[ String ]",
+        "referenceSet_ID": "String",
+        "study_ID": "String",
         "variants_IDs": "[ String ]"
     },
     "associations": {
         "additionalInfo": {
-            "type": "one_to_many",
+            "type": "one_to_one",
             "implementation": "foreignkeys",
             "reverseAssociation": "variantSet",
             "target": "additionalinfo",
             "targetKey": "variantSet_ID",
-            "sourceKey": "additionalInfo_IDs",
+            "sourceKey": "additionalInfo_ID",
             "keysIn": "variantset",
             "targetStorageType": "sql"
         },
@@ -74,19 +74,19 @@
         "analysis": {
             "type": "one_to_many",
             "implementation": "foreignkeys",
-            "reverseAssociation": "variantset",
+            "reverseAssociation": "variantSet",
             "target": "analysis",
-            "targetKey": "variantset_ID",
+            "targetKey": "variantSet_ID",
             "sourceKey": "analysis_IDs",
             "keysIn": "variantset",
             "targetStorageType": "sql"
         },
         "availableFormats": {
-            "type": "one_to_many",
+            "type": "many_to_many",
             "implementation": "foreignkeys",
-            "reverseAssociation": "variantset",
+            "reverseAssociation": "variantSet",
             "target": "availableformat",
-            "targetKey": "variantset_ID",
+            "targetKey": "variantSet_IDs",
             "sourceKey": "availableFormats_IDs",
             "keysIn": "variantset",
             "targetStorageType": "sql"
@@ -94,9 +94,9 @@
         "externalReferences": {
             "type": "one_to_many",
             "implementation": "foreignkeys",
-            "reverseAssociation": "variantset",
+            "reverseAssociation": "variantSet",
             "target": "externalreference",
-            "targetKey": "variantset_ID",
+            "targetKey": "variantSet_ID",
             "sourceKey": "externalReferences_IDs",
             "keysIn": "variantset",
             "targetStorageType": "sql"
@@ -104,9 +104,9 @@
         "metadataFields": {
             "type": "one_to_many",
             "implementation": "foreignkeys",
-            "reverseAssociation": "variantset",
+            "reverseAssociation": "variantSet",
             "target": "metadatafield",
-            "targetKey": "variantset_ID",
+            "targetKey": "variantSet_ID",
             "sourceKey": "metadataFields_IDs",
             "keysIn": "variantset",
             "targetStorageType": "sql"

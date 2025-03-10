@@ -2,11 +2,8 @@
     "model": "callset",
     "storageType": "sql",
     "attributes": {
-        "additionalInfo_IDs": "[ String ]",
-        "alleleMatrices_IDs": "[ String ]",
-        "calls_IDs": "[ String ]",
         "callSetDbId": {
-            "type": "[ String ]",
+            "type": "String",
             "description": "The ID which uniquely identifies a CallSet within the given database server"
         },
         "callSetName": {
@@ -17,23 +14,26 @@
             "type": "String",
             "description": "The date this call set was created"
         },
-        "externalReferences_IDs": "[ String ]",
-        "sample_ID": "String",
-        "study_ID": "String",
         "updated": {
             "type": "String",
             "description": "The time at which this call set was last updated"
         },
+        "additionalInfo_ID": "String",
+        "alleleMatrices_IDs": "[ String ]",
+        "calls_IDs": "[ String ]",
+        "externalReferences_IDs": "[ String ]",
+        "sample_ID": "String",
+        "study_ID": "String",
         "variantSets_IDs": "[ String ]"
     },
     "associations": {
         "additionalInfo": {
-            "type": "one_to_many",
+            "type": "one_to_one",
             "implementation": "foreignkeys",
             "reverseAssociation": "callSet",
             "target": "additionalinfo",
             "targetKey": "callSet_ID",
-            "sourceKey": "additionalInfo_IDs",
+            "sourceKey": "additionalInfo_ID",
             "keysIn": "callset",
             "targetStorageType": "sql"
         },
@@ -60,9 +60,9 @@
         "externalReferences": {
             "type": "one_to_many",
             "implementation": "foreignkeys",
-            "reverseAssociation": "callset",
+            "reverseAssociation": "callSet",
             "target": "externalreference",
-            "targetKey": "callset_ID",
+            "targetKey": "callSet_ID",
             "sourceKey": "externalReferences_IDs",
             "keysIn": "callset",
             "targetStorageType": "sql"

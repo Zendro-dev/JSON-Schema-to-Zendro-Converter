@@ -2,10 +2,6 @@
     "model": "eventparameter",
     "storageType": "sql",
     "attributes": {
-        "eventParameterDbId": {
-            "type": "[ String ]",
-            "description": "the unique identifier for a event parameter"
-        },
         "code": {
             "type": "String",
             "description": "The shortened code name of an event parameter\n<br>ICASA \"Code_Display\""
@@ -31,8 +27,12 @@
             "description": "If the event parameter 'unit' field is 'code', then use 'valueDescription' to add a human readable description to the value."
         },
         "valuesByDate": {
-            "type": "[ String ]",
+            "type": "String",
             "description": "An array of values corresponding to each timestamp in the 'discreteDates' array of this event. The 'valuesByDate' array should exactly match the size of the 'discreteDates' array. If 'valuesByDate' is populated then 'value' should NOT be populated."
+        },
+        "eventParameterDbId": {
+            "type": "String",
+            "description": ""
         },
         "event_ID": "String"
     },

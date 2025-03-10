@@ -3,8 +3,8 @@
     "storageType": "sql",
     "attributes": {
         "lastUpdateDbId": {
-            "type": "[ String ]",
-            "description": "The ID which uniquely identifies this update"
+            "type": "String",
+            "description": "The date and time when this study was last modified"
         },
         "timestamp": {
             "type": "String",
@@ -18,11 +18,11 @@
     },
     "associations": {
         "study": {
-            "type": "one_to_one",
+            "type": "many_to_one",
             "implementation": "foreignkeys",
             "reverseAssociation": "lastUpdate",
             "target": "study",
-            "targetKey": "lastUpdate_ID",
+            "targetKey": "lastUpdate_IDs",
             "sourceKey": "study_ID",
             "keysIn": "lastupdate",
             "targetStorageType": "sql"

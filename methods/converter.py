@@ -1,9 +1,12 @@
 import os
+import re
 import sys
 import json
 import argparse
+import traceback
 from datetime import datetime, date
 from pathlib import Path
+
 
 ##############################
 
@@ -16,6 +19,9 @@ ZENDRO_TYPES = {
     'number': 'Float'
 }
 
+excluded_models = []
+
+
 ##############################
 
 
@@ -25,10 +31,12 @@ parser = argparse.ArgumentParser(
     description='Converts json-schemas to a Zendro data model'
 )
 
+# Input path of the models
 parser.add_argument('-i', '--input-path',
-                    help='Path to the json schemas.',
+                    help='Path to the schemas.',
                     required=True)
 
+# Output path of the models
 parser.add_argument('-o', '--output-path',
                     help='Path where the Zendro data models should be stored.',
                     required=True)
@@ -103,15 +111,10 @@ def main():
     input_models = get_models(get_files(args.input_path))
 
     # Extract properties from all models
-    output_models = {}
-    for model in input_models:
-        print(model)
-        output_models[model] = get_properties(input_models[model]["properties"], model)
+    output_models = get_properties(input_models)
 
-    #test_models(output_models)
-    # Write the Zendro data model definitions
+    # Write conversed models
     write_json(output_models)
-
 
 def get_files(input_path):
     """
@@ -121,6 +124,7 @@ def get_files(input_path):
     :param input_path: Path to the input files/directories
     :return: Returns all found files in the input hierarchy
     """
+
     # All found files
     input_files = []
 
@@ -135,7 +139,6 @@ def get_files(input_path):
 
     return input_files
 
-
 def get_models(input_files):
     """
     Read in the given files and extract all models from it.\n
@@ -145,15 +148,72 @@ def get_models(input_files):
     :return: Formatted dictionary of data models
     """
     try:
+        # Read in every model
         files_data = {}
         for file in input_files:
             with open(file, "r") as open_file:
                 models = json.load(open_file)['$defs']
                 for current_model in models:
-                    print(current_model)
+                    # Check if model is an enum -> Enums are incompatible to Zendro
+                    if "enum" in models[current_model]:
+                        log(f"{current_model}\t-\tIs an enum and is not supported!")
+                        excluded_models.append(current_model)
+                        continue
+                    # Check if the model has any properties
+                    if "properties" not in models[current_model] and not any(keyword in models[current_model] for keyword in ["oneOf", "allOf", "additionalProperties"]):
+                        log(f"{current_model}\t-\tDoesn't have properties!")
+                        continue
+
+                    # Separate model in dictionaries for more overview
                     files_data[current_model] = {}
-                    files_data[current_model]['properties'] = models[current_model]['properties']
-                    # files_data[current_model]['required'] = models[current_model]['required']
+                    files_data[current_model]["attributes"] = {}
+                    files_data[current_model]["associations"] = {}
+                    files_data[current_model]["primary_key"] = {}
+
+                    # Check if there is an "allOf" or "OneOf" in the model
+                    # allOf -> include all properties of the referenced model
+                    if not "properties" in models[current_model] and "allOf" in models[current_model]:
+                        if "$ref" in models[current_model]["allOf"][0]:
+                            files_data[current_model]["properties"] = models[current_model]["allOf"][1]["properties"]
+                            files_data[current_model]["allOf"] = models[current_model]["allOf"][0]["$ref"].split("/")[-1]
+                        else:
+                            files_data[current_model]["properties"] = models[current_model]["allOf"][0]["properties"]
+                            files_data[current_model]["allOf"] = models[current_model]["allOf"][1]["$ref"].split("/")[-1]
+                    # oneOf -> user can decide which property should be used
+                    elif not "properties" in models[current_model] and "oneOf" in models[current_model]:
+                        prompt = "Model with oneOf property detected.\nPlease choose between one property (enter number):"
+                        for index, oneOf_property in enumerate(models[current_model]["oneOf"]):
+                            prompt += f"\n{index}: {oneOf_property['title']}"
+                        prompt += "\nChosen property:\t"
+                        # Repeat user input, until there is a correct input
+                        while True:
+                            user_input = input(prompt)
+                            
+                            if user_input.isdigit() and int(user_input) in range(0,len(models[current_model]["oneOf"])):
+                                files_data[current_model]["properties"] = models[current_model]["oneOf"][int(user_input)]["properties"]
+                                break
+                            else:
+                                print("Wrong input, please enter only the number you see!")
+
+                    # If the model has a properties tag, then copy properties into our dictionary
+                    elif "properties" in models[current_model]:
+                        files_data[current_model]['properties'] = models[current_model]['properties']
+                    # If the model has an "additionalProperties" tag, then add two necessary infos
+                    elif "additionalProperties" in models[current_model]:
+                        files_data[current_model]['properties'] = {
+                            "additionalInfoDbId": {
+                                "description": "the unique identifier for an additional info",
+                                "type": "string"
+                            },
+                            "additionalProperties": {
+                                "description": "A free space containing any additional information related to a particular object. A data source may provide any JSON object.",
+                                "type": "string"
+                            }
+                        }
+                    else:
+                        log(f"{current_model}: No properties!")
+                        del files_data[current_model]
+
 
         return files_data if files_data else None
 
@@ -164,100 +224,193 @@ def get_models(input_files):
         log(f'An error occurred: {model_exception}')
         sys.exit(1)
 
-
-def get_properties(input_model_properties, current_model):
+def get_properties(models):
     """
-    Get a formatted dictionary of data models with Zendro compatible data types and references.\n
-    Ready to be writen in json format.
+    Get of all models, extract and convert the models to Zendro and return it.
 
-    :param input_model_properties: Dictionary of all properties included in the current model
-    :param current_model: The name of the current model
-    :return: Formatted dictionary of data models compatible to Zendro
+    :param models: Dictionary of models
+    :return: Formatted and converted dictionary of models
     """
-
-    model_properties = {
-        "attributes": {},
-        "associations": {},
-        "primary_key": {}
-    }
-    foreign_keys = {}
-
-    for model_property in input_model_properties:
-        current_property = input_model_properties[model_property]
-
-        if "relationshipType" not in current_property:
-            property_type = get_property_type(current_property)
-
-            if model_property == f'{current_model[0].lower() + current_model[1:]}DbId':
-                model_property = args.primary_key_name if args.primary_key_name else model_property
-
-                model_properties["primary_key"] = {
-                    "Name": model_property,
-                    "Type": f'[ {args.primary_key_type} ]'
+    # For loop over all models
+    for current_model in models:
+        # Check if there is a custom primary key defined
+        if args.primary_key_name:
+            primary_key = args.primary_key_name
+        elif f'{current_model[0].lower() + current_model[1:]}DbId' not in models[current_model]["properties"]:
+            # Re expression to search for DbId
+            if any(re.search("DbId$", re_property) for re_property in models[current_model]["properties"]):
+                primary_key = next((key for key in models[current_model]["properties"] if re.search(r"DbId\b", key)), None)
+            # Re expression to search for id and change it to DbId
+            elif any(re.search("Id$", re_property) for re_property in models[current_model]["properties"]):
+                pattern = r"Id\b"
+                models[current_model]["properties"] = {
+                    re.sub(pattern, "DbId", key): value
+                    for key, value in models[current_model]["properties"].items()
                 }
-
-                property_type = f'[ {args.primary_key_type} ]'
-
-            if property_type:
-                description = ""
-                if "description" in current_property:
-                    description = current_property['description'].replace("'", "\'")
-                    description.replace('"', "\"")
-                model_properties["attributes"][model_property] = {
-                    "type": property_type,
-                    "description": description
-                }
+                primary_key = next((key for key in models[current_model]["properties"] if re.search(r"DbId\b", key)), None)
             else:
-                continue
+                models[current_model]["properties"][
+                    f"{current_model[0].lower() + current_model[1:]}DbId"] = "String"
+                primary_key = f"{current_model[0].lower() + current_model[1:]}DbId"
         else:
-            association_relationship_type = current_property["relationshipType"].replace("-", "_")
+            primary_key = f"{current_model[0].lower() + current_model[1:]}DbId"
 
-            if "items" in current_property:
-                association_target = current_property["items"]["$ref"].split("/")[-1]
-            else:
-                association_target = current_property["$ref"].split("/")[-1]
+        # Save primary key information about the model
+        models[current_model]["primary_key"] = {
+            "Name": primary_key,
+            "Type": args.primary_key_type
+        }
 
-            match association_relationship_type:
-                case "many_to_one":
-                    target_key = f'{current_property["referencedAttribute"]}_IDs'
-                    source_key = f'{model_property}_ID'
-                    foreign_keys[source_key] = "String"
-                case "one_to_many":
-                    target_key = f'{current_property["referencedAttribute"]}_ID'
-                    source_key = f'{model_property}_IDs'
-                    foreign_keys[source_key] = "[ String ]"
-                case "many_to_many":
-                    target_key = f'{current_property["referencedAttribute"]}_IDs'
-                    source_key = f'{model_property}_IDs'
-                    foreign_keys[source_key] = "[ String ]"
-                case "one_to_one":
-                    target_key = f'{current_property["referencedAttribute"]}_ID'
-                    source_key = f'{model_property}_ID'
-                    foreign_keys[source_key] = "String"
-                case _:
-                    log(f'Model: {current_model}\tProperty: {model_property}\t !Wrong association type!')
+        # allOf -> include properties of referenced model
+        if "allOf" in models[current_model]:
+            target = models[current_model]["allOf"]
+            models[current_model]["properties"].update(models[target]["properties"])
+            del models[current_model]["allOf"]
+
+        foreign_keys = {}
+        for model_property in models[current_model]["properties"]:
+            current_property = models[current_model]["properties"][model_property]
+
+            # Check if property is an association
+            if "items" in current_property and "$ref" in current_property["items"] or "$ref" in current_property:
+
+                if "relationshipType" not in current_property:
+                    if model_property.lower() not in [model_excluded.lower() for model_excluded in excluded_models]:
+                        log(f"{current_model}:\t{model_property} - No relationshipType!")
                     continue
 
-            model_properties["associations"][model_property] = {
-                "type": association_relationship_type,
-                "implementation": "foreignkeys",
-                "reverseAssociation": current_property["referencedAttribute"],
-                "target": association_target.lower(),
-                "targetKey": target_key,
-                "sourceKey": source_key,
-                "keysIn": current_model.lower(),
-                "targetStorageType": database_mapping.get(association_target.lower(), args.storage_type)
-            }
+                association_relationship_type = current_property["relationshipType"].replace("-", "_")
 
-        model_properties["attributes"].update(foreign_keys)
-    return model_properties
+                if "items" in current_property:
+                    association_target = current_property["items"]["$ref"].split("/")[-1]
+                else:
+                    association_target = current_property["$ref"].split("/")[-1]
+                if "referencedAttribute" not in current_property:
+                    referenced_attribute = current_model[0].lower() + current_model[1:]
+                else:
+                    referenced_attribute = current_property["referencedAttribute"]
 
+                # Check relationship type
+                match association_relationship_type:
+                    case "many_to_one":
+                        target_key = f'{referenced_attribute}_IDs'
+                        source_key = f'{model_property}_ID'
+                        foreign_keys[source_key] = "String"
+                    case "one_to_many":
+                        target_key = f'{referenced_attribute}_ID'
+                        source_key = f'{model_property}_IDs'
+                        foreign_keys[source_key] = "[ String ]"
+                    case "many_to_many":
+                        target_key = f'{referenced_attribute}_IDs'
+                        source_key = f'{model_property}_IDs'
+                        foreign_keys[source_key] = "[ String ]"
+                    case "one_to_one":
+                        target_key = f'{referenced_attribute}_ID'
+                        source_key = f'{model_property}_ID'
+                        foreign_keys[source_key] = "String"
+                    case _:
+                        log(f'Model: {current_model}\tProperty: {model_property}\t !Wrong association type!')
+                        continue
+
+                # Check if the association target exists
+                if association_target not in models:
+                    if model_property != "additionalInfo" and association_target not in excluded_models:
+                        log(f"{current_model} \t {model_property}\t {association_target}: Model not found")
+                    continue
+                elif "properties" not in models[association_target] and referenced_attribute not in \
+                        models[association_target]["attributes"] or \
+                        "properties" in models[association_target] and referenced_attribute not in \
+                        models[association_target]["properties"]:
+                    reverse_association = get_reverse_association(association_relationship_type)
+
+                    # Save reverse association information in the target model
+                    models[association_target]["associations"][referenced_attribute] = {
+                        "type": reverse_association["association"],
+                        "implementation": "foreignkeys",
+                        "reverseAssociation": model_property,
+                        "target": current_model.lower(),
+                        "targetKey": source_key,
+                        "sourceKey": target_key,
+                        "keysIn": association_target.lower(),
+                        "targetStorageType": database_mapping.get(current_model.lower(), args.storage_type)
+                    }
+                    models[association_target]["attributes"].update({target_key: reverse_association["type"]})
+
+                # Save association information in the current model
+                models[current_model]["associations"][model_property] = {
+                    "type": association_relationship_type,
+                    "implementation": "foreignkeys",
+                    "reverseAssociation": referenced_attribute,
+                    "target": association_target.lower(),
+                    "targetKey": target_key,
+                    "sourceKey": source_key,
+                    "keysIn": current_model.lower(),
+                    "targetStorageType": database_mapping.get(association_target.lower(), args.storage_type)
+                }
+            # Property is not an association
+            else:
+                # Check if a custom primary key type is set
+                if args.primary_key_type:
+                    property_type = args.primary_key_type
+                else:
+                    property_type = get_property_type(current_property)
+
+                models[current_model]["primary_key"].update({"Type": f"{args.primary_key_type}"})
+
+                # Check if the property has a compatible type and get property information
+                # Else continue/skip the property
+                if property_type:
+                    description = ""
+                    if "description" in current_property:
+                        description = current_property['description'].replace("'", "\'")
+                        description.replace('"', "\"")
+                    models[current_model]["attributes"][model_property] = {
+                        "type": property_type,
+                        "description": description
+                    }
+                else:
+                    continue
+
+        # Add/update the attribute with the foreign keys
+        models[current_model]["attributes"].update(foreign_keys)
+
+    # After finishing a model it gets deleted
+    for current_model in models:
+        del models[current_model]["properties"]
+    return models
+
+def get_reverse_association(association):
+    """
+    Get the reverse association and set the type. \n
+    Return reverse association, per default it's one_to_one.
+
+    :param association: The current association frm witch we want the reverse association.
+    :return: reverse association and it's type.
+    """
+
+    reverse_association = {}
+    # Get reverse association, per default it's a one_to_one association
+    match association:
+        case "many_to_one":
+            reverse_association["association"] = "one_to_many"
+            reverse_association["type"] = "[ String ]"
+        case "one_to_many":
+            reverse_association["association"] = "many_to_one"
+            reverse_association["type"] = "String"
+        case "many_to_many":
+            reverse_association["association"] = "many_to_many"
+            reverse_association["type"] = "[ String ]"
+        case _:
+            reverse_association["association"] = "one_to_one"
+            reverse_association["type"] = "String"
+    return reverse_association
 
 def get_property_type(input_property):
     """
-    Checks the passed item for a Zendro compatible type and returns it
-    :param input_property: An item from a json file (a dictionary)
-    :return: Returns Zendro compatible type or none
+    Checks the passed item for a Zendro compatible type and return it.
+
+    :param input_property: An item from a json file (a dictionary).
+    :return: Returns Zendro compatible type or none.
     """
 
     property_type = None
@@ -278,48 +431,16 @@ def get_property_type(input_property):
 
     return property_type
 
-
-def test_models(output_models):
-    for model in output_models:
-        for association in output_models[model]["associations"]:
-
-            target_model = output_models[model]["associations"][association]["target"]
-            target_key = output_models[model]["associations"][association]["targetKey"]
-            source_key = output_models[model]["associations"][association]["sourceKey"]
-            reverse_association = output_models[model]["associations"][association]["reverseAssociation"]
-
-
-            try:
-                Output_Error = f'Model: {model} \t Association: {association}\t\n'
-                flag = False
-                if target_model not in output_models:
-                    flag = True
-                    Output_Error += f'Model: {model}\tTarget: {target_model}\t Not existing\n'
-                if target_key not in output_models[target_model]["attributes"]:
-                    flag = True
-                    Output_Error += f'Model: {model}\tTargetkey: {target_key}\t Not in: {target_model}\n'
-                if source_key not in output_models[model]["attributes"]:
-                    flag = True
-                    Output_Error += f'Model: {model}\tSourceKey: {source_key}\t Not in: {model}\n'
-                if reverse_association not in output_models[target_model]["associations"]:
-                    flag = True
-                    Output_Error += f'Model: {model}\tReverseAssociation: {reverse_association}\t Not in: {target_model}\n'
-                Output_Error += f'~~~~~ \n'
-
-                if flag:
-                    log(Output_Error)
-            except Exception as modelexception:
-                log(f'Model: {model} /t {modelexception}')
-
 def write_json(output_models):
     """
-    Writes the passed models to their own json file.
+    Writes the converted models to their own json file.
 
     :param output_models: Dictionary with model definitions compatible to Zendro
     :return: None: Nothing is returned
     """
     try:
         for model in output_models:
+            # Create a json file with all model information in Zendro standard
             json_file = {
                 "model": model.lower(),
                 "storageType": database_mapping.get(model.lower(), args.storage_type),
@@ -328,6 +449,7 @@ def write_json(output_models):
                 "internalId": output_models[model]["primary_key"]["Name"]
             }
 
+            # Set correct indent and write it to file
             json_object = json.dumps(json_file, indent=4)
             Path(args.output_path).mkdir(parents=True, exist_ok=True)
             with open(os.path.join(args.output_path, f'{model.lower()}.json'), "w") as file:
@@ -335,10 +457,10 @@ def write_json(output_models):
     except OSError as file_error:
         log(f'Couldn\'t write to file test: {file_error}')
     except Exception as model_exception:
-        print(model_exception)
-        log(f'An error occurred: {model_exception}')
+        print("Exception occured!")
+        traceback.print_exc()
+        log(f"An error occurred: {repr(model_exception)}")
         sys.exit(1)
-
 
 def log(msg):
     """
@@ -353,7 +475,8 @@ def log(msg):
         with open("Log.txt", "a") as file:
             current_time = datetime.now().strftime("%H:%M:%S")
             file.write(f'{str(date.today())} - {current_time}:\t{msg}\n')
-            print(f'An error occurred, please view the log file for details!')
+            print(msg)
+            #print(f'An error occurred, please view the log file for details!')
     except OSError as log_error:
         # Prints the occurred error
         print(f'An error occurred while writing the log file: {log_error}')

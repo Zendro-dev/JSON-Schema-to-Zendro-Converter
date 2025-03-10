@@ -2,9 +2,10 @@
     "$defs": {
         "Image": {
             "properties": {
-                "imageDbId": {
-                    "description": "The unique identifier of an image",
-                    "type": "string"
+                "additionalInfo": {
+                    "description": "A free space containing any additional information related to a particular object. A data source may provide any JSON object, unrestricted by the BrAPI specification.",
+                    "$ref": "../BrAPI-Common/AdditionalInfo.json#/$defs/AdditionalInfo",
+					"relationshipType": "one-to-one"
                 },
                 "copyright": {
                     "description": "The copyright information of this image. Example 'Copyright 2018 Bob Robertson'",
@@ -30,6 +31,23 @@
                         "array"
                     ]
                 },
+                "externalReferences": {
+                    "description": "An array of external reference ids. These are references to this piece of data in an external system. Could be a simple string or a URI.",
+                    "relationshipType": "one-to-many",
+                    "items": {
+                        "$ref": "../BrAPI-Common/ExternalReference.json#/$defs/ExternalReference",
+                        "description": "ExternalReferences"
+                    },
+                    "title": "ExternalReferences",
+                    "type": [
+                        "null",
+                        "array"
+                    ]
+                },
+                "imageDbId": {
+                    "description": "The unique identifier of an image",
+                    "type": "string"
+                },
                 "imageFileName": {
                     "description": "The name of the image file. Might be the same as 'imageName', but could be different.",
                     "type": [
@@ -50,6 +68,12 @@
                         "null",
                         "integer"
                     ]
+                },
+                "imageLocation": {
+                    "description": "One geometry as defined by GeoJSON (RFC 7946). All coordinates are decimal values on the WGS84 geographic coordinate reference system.\n\nCopied from RFC 7946 Section 3.1.1\n\nA position is an array of numbers. There MUST be two or more elements. The first two elements are longitude and latitude, or\neasting and northing, precisely in that order and using decimal numbers. Altitude or elevation MAY be included as an optional third element.",
+                    "relationshipType": "one-to-one",
+                    "referencedAttribute": "image",
+					"$ref": "../BrAPI-Common/GeoJSON.json#/$defs/GeoJSON"
                 },
                 "imageName": {
                     "description": "The human readable name of an image. Might be the same as 'imageFileName', but could be different.",
@@ -102,89 +126,16 @@
                     "referencedAttribute": "images",
                     "relationshipType": "many-to-many",
                     "type": "array"
-                },
-                "additionalInfo": {
-                    "title": "additionalInfo",
-                    "description": "A free space containing any additional information related to a particular object. A data source may provide any JSON object, unrestricted by the BrAPI specification.",
-                    "referencedAttribute": "image",
-                    "relationshipType": "one-to-many",
-                    "items": {
-                        "$ref": "AdditionalInfo.json#/$defs/AdditionalInfo",
-                        "description": "AdditionalInfo"
-                    },
-                    "type": [
-                        "null",
-                        "array"
-                    ]
-                },
-                "externalReferences": {
-                    "title": "externalReferences",
-                    "description": "An array of external reference ids. These are references to this piece of data in an external system. Could be a simple string or a URI.",
-                    "referencedAttribute": "image",
-                    "relationshipType": "one-to-many",
-                    "items": {
-                        "$ref": "ExternalReference.json#/$defs/ExternalReference",
-                        "description": "ExternalReference"
-                    },
-                    "type": [
-                        "null",
-                        "array"
-                    ]
-                },
-                "imageLocation": {
-                    "$ref": "Image.json#/$defs/ImageLocation",
-                    "description": "One geometry as defined by GeoJSON (RFC 7946). All coordinates are decimal values on the WGS84 geographic coordinate reference system.\n\nCopied from RFC 7946 Section 3.1.1\n\nA position is an array of numbers. There MUST be two or more elements. The first two elements are longitude and latitude, or\neasting and northing, precisely in that order and using decimal numbers. Altitude or elevation MAY be included as an optional third element.",
-                    "referencedAttribute": "images",
-                    "relationshipType": "many-to-one"
                 }
             },
             "required": [
                 "imageDbId"
             ],
             "title": "Image",
-            "type": "object"
-        },
-        "ImageLocation": {
-            "properties": {
-                "imageLocationDbId": {
-                    "description": "the unique identifier for a image location",
-                    "type": "string"
-                },
-                "geometry": {
-                    "description": "A free space containing any additional information related to a coordinate.",
-                    "type": [
-                        "null",
-                        "string"
-                    ]
-                },
-                "type": {
-                    "default": "Feature",
-                    "description": "The literal string \"Feature\"",
-                    "type": [
-                        "null",
-                        "string"
-                    ]
-                },
-                "images": {
-                    "title": "images",
-                    "description": "List of images associated to this location",
-                    "referencedAttribute": "imageLocation",
-                    "relationshipType": "one-to-many",
-                    "items": {
-                        "$ref": "Image.json#/$defs/Image",
-                        "description": "Images"
-                    },
-                    "type": [
-                        "null",
-                        "array"
-                    ]
-                }
-            },
-            "required":[
-                "imageLocationDbId"
-            ],
-            "title": "ImageLocation",
-            "type": "object"
+            "type": "object",
+            "brapi-metadata": {
+                "primaryModel": true
+            }
         }
     },
     "$id": "https://brapi.org/Specification/BrAPI-Schema/BrAPI-Phenotyping/Image.json",

@@ -2,17 +2,21 @@
     "model": "pollinationevent",
     "storageType": "sql",
     "attributes": {
-        "pollinationEventDbId": {
-            "type": "[ String ]",
+        "pollinationNumber": {
+            "type": "String",
             "description": "The unique identifier for this pollination event"
         },
         "pollinationSuccessful": {
-            "type": "Boolean",
+            "type": "String",
             "description": "True if the pollination was successful"
         },
         "pollinationTimeStamp": {
             "type": "String",
             "description": "The timestamp when the pollination took place"
+        },
+        "pollinationEventDbId": {
+            "type": "String",
+            "description": ""
         },
         "cross_ID": "String"
     },

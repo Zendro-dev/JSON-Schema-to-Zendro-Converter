@@ -3,20 +3,11 @@
         "MarkerPosition": {
             "properties": {
                 "additionalInfo": {
-                    "title": "additionalInfo",
                     "description": "A free space containing any additional information related to a particular object. A data source may provide any JSON object, unrestricted by the BrAPI specification.",
-                    "referencedAttribute": "markerPosition",
-                    "relationshipType": "one-to-many",
-                    "items": {
-                        "$ref": "AdditionalInfo.json#/$defs/AdditionalInfo",
-                        "description": "AdditionalInfo"
-                    },
-                    "type": [
-                        "null",
-                        "array"
-                    ]
+                    "relationshipType": "one-to-one",
+                    "$ref": "../BrAPI-Common/AdditionalInfo.json#/$defs/AdditionalInfo"
                 },
-                "linkageGroupName": {
+				"linkageGroupName": {
                     "description": "The Uniquely Identifiable name of a `LinkageGroup`\n<br> This might be a chromosome identifier or the generic linkage group identifier if the chromosome is not applicable.",
                     "type": [
                         "null",
@@ -28,10 +19,6 @@
                     "description": "The ID which uniquely identifies a `GenomeMap`",
                     "referencedAttribute": "markerPositions",
                     "relationshipType": "many-to-one"
-                },
-                "markerPositionDbId": {
-                    "description": "The ID which uniquely identifies a study within the given database server\n\nMIAPPE V1.1 (DM-11) Study unique ID - Unique identifier comprising the name or identifier for the institution/database hosting the submission of the study data, and the identifier of the study in that institution.",
-                    "type": "string"
                 },
                 "position": {
                     "description": "The position of a marker or variant within a `LinkageGroup`",
@@ -47,11 +34,11 @@
                     "relationshipType": "many-to-one"
                 }
             },
-            "required": [
-                "markerPositionDbId"
-            ],
             "title": "MarkerPosition",
-            "type": "object"
+            "type": "object",
+            "brapi-metadata": {
+                "primaryModel": true
+            }
         }
     },
     "$id": "https://brapi.org/Specification/BrAPI-Schema/BrAPI-Genotyping/MarkerPosition.json",

@@ -3,22 +3,9 @@
         "Call": {
             "properties": {
                 "additionalInfo": {
-                    "title": "additionalInfo",
                     "description": "A free space containing any additional information related to a particular object. A data source may provide any JSON object, unrestricted by the BrAPI specification.",
-                    "referencedAttribute": "call",
-                    "relationshipType": "one-to-many",
-                    "items": {
-                        "$ref": "AdditionalInfo.json#/$defs/AdditionalInfo",
-                        "description": "AdditionalInfo"
-                    },
-                    "type": [
-                        "null",
-                        "array"
-                    ]
-                },
-                "callDbId": {
-                    "description": "The ID which uniquely identifies a call within the given database server\n\nMIAPPE V1.1 (DM-11) Study unique ID - Unique identifier comprising the name or identifier for the institution/database hosting the submission of the study data, and the identifier of the study in that institution.",
-                    "type": "string"
+                    "relationshipType": "one-to-one",
+                    "$ref": "../BrAPI-Common/AdditionalInfo.json#/$defs/AdditionalInfo"
                 },
                 "callSet": {
                     "$ref": "CallSet.json#/$defs/CallSet",
@@ -27,14 +14,14 @@
                     "relationshipType": "many-to-one"
                 },
                 "genotypeMetadata": {
-                    "title": "genotypeMetadata",
-                    "description": "The ID which uniquely identifies this metadata field",
-                    "referencedAttribute": "call",
+                    "description": "Genotype Metadata are additional layers of metadata associated with each genotype.",
                     "relationshipType": "one-to-many",
+                    "referencedAttribute": "call",
                     "items": {
-                        "$ref": "Call.json#/$defs/GenotypeMetadata",
-                        "description": "genotypeMetadata"
+                        "$ref": "../BrAPI-Genotyping/Call.json#/$defs/GenotypeMetadata",
+                        "description": "GenotypeMetadata"
                     },
+                    "title": "GenotypeMetadata",
                     "type": [
                         "null",
                         "array"
@@ -68,23 +55,18 @@
                 }
             },
             "required": [
-                "callDbId",
                 "callSet",
                 "variant",
                 "variantSet"
             ],
             "title": "Call",
-            "type": "object"
+            "type": "object",
+            "brapi-metadata": {
+                "primaryModel": true
+            }
         },
         "GenotypeMetadata": {
             "properties": {
-                "genotypeMetadataDbId": {
-                    "description": "The ID which uniquely identifies this metafield",
-                    "type": [
-                        "null",
-                        "string"
-                    ]
-                },
                 "dataType": {
                     "description": "The type of field represented in this Genotype Field. This is intended to help parse the data out of JSON.",
                     "enum": [
@@ -121,17 +103,17 @@
                     ]
                 },
                 "call": {
-                    "$ref": "Call.json#/$defs/Call",
-                    "description": "The unique identifier for a Call.",
-                    "referencedAttribute": "genotypeMetadata",
-                    "relationshipType": "many-to-one"
+                    "description": "Genotype metadata associated with a call",
+                    "$ref": "../BrAPI-Genotyping/Call.json#/$defs/Call",
+                    "relationshipType": "many-to-one",
+                    "referencedAttribute": "genotypeMetadata"
                 }
             },
-            "required": [
-                "genotypeMetadataDbId"
-            ],
-            "title": "Call",
-            "type": "object"
+            "title": "GenotypeMetadata",
+            "type": "object",
+            "brapi-metadata": {
+                "primaryModel": false
+            }
         }
     },
     "$id": "https://brapi.org/Specification/BrAPI-Schema/BrAPI-Genotyping/Call.json",

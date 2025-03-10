@@ -3,7 +3,7 @@
     "storageType": "sql",
     "attributes": {
         "seasonDbId": {
-            "type": "[ String ]",
+            "type": "String",
             "description": "The ID which uniquely identifies a season. For backward compatibility it can be a string like '2012', '1957-2004'"
         },
         "seasonName": {
@@ -11,19 +11,19 @@
             "description": "Name of the season. ex. 'Spring', 'Q2', 'Season A', etc."
         },
         "year": {
-            "type": "Int",
+            "type": "String",
             "description": "The 4 digit year of the season."
         },
-        "observations_IDs": "[ String ]"
+        "observation_IDs": "[ String ]"
     },
     "associations": {
-        "observations": {
+        "observation": {
             "type": "one_to_many",
             "implementation": "foreignkeys",
             "reverseAssociation": "season",
             "target": "observation",
             "targetKey": "season_ID",
-            "sourceKey": "observations_IDs",
+            "sourceKey": "observation_IDs",
             "keysIn": "season",
             "targetStorageType": "sql"
         }

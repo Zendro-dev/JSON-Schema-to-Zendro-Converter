@@ -2,10 +2,6 @@
     "model": "synonym",
     "storageType": "sql",
     "attributes": {
-        "synonymDbId": {
-            "type": "[ String ]",
-            "description": "the unique identifier for a synonym"
-        },
         "synonym": {
             "type": "String",
             "description": "Alternative name or ID used to reference this germplasm"
@@ -13,6 +9,10 @@
         "type": {
             "type": "String",
             "description": "A descriptive classification for this synonym"
+        },
+        "synonymDbId": {
+            "type": "String",
+            "description": ""
         },
         "germplasm_ID": "String"
     },

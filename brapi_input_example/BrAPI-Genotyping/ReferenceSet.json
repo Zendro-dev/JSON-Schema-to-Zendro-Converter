@@ -3,18 +3,9 @@
         "ReferenceSet": {
             "properties": {
                 "additionalInfo": {
-                    "title": "additionalInfo",
                     "description": "A free space containing any additional information related to a particular object. A data source may provide any JSON object, unrestricted by the BrAPI specification.",
-                    "referencedAttribute": "referenceSet",
-                    "relationshipType": "one-to-many",
-                    "items": {
-                        "$ref": "AdditionalInfo.json#/$defs/AdditionalInfo",
-                        "description": "AdditionalInfo"
-                    },
-                    "type": [
-                        "null",
-                        "array"
-                    ]
+                    "$ref": "../BrAPI-Common/AdditionalInfo.json#/$defs/AdditionalInfo",
+					"relationshipType": "one-to-one"
                 },
                 "assemblyPUI": {
                     "description": "The remaining information is about the source of the sequences Public id of this reference set, such as `GRCH_37`.",
@@ -38,20 +29,18 @@
                     ]
                 },
                 "externalReferences": {
-                    "title": "externalReferences",
-                    "description": "The ID which uniquely identifies this external reference field",
-                    "referencedAttribute": "referenceset",
+                    "description": "An array of external reference ids. These are references to this piece of data in an external system. Could be a simple string or a URI.",
                     "relationshipType": "one-to-many",
                     "items": {
-                        "$ref": "ExternalReference.json#/$defs/ExternalReference",
-                        "description": "externalReferences"
+                        "$ref": "../BrAPI-Common/ExternalReference.json#/$defs/ExternalReference",
+                        "description": "ExternalReferences"
                     },
+                    "title": "ExternalReferences",
                     "type": [
                         "null",
                         "array"
                     ]
                 },
-                
                 "isDerived": {
                     "description": "A reference set may be derived from a source if it contains additional sequences, or some of the sequences within it are derived (see the definition of `isDerived` in `Reference`).",
                     "type": [
@@ -85,14 +74,14 @@
                     ]
                 },
                 "sourceGermplasm": {
-                    "title": "sourceGermplasm",
-                    "description": "The ID which uniquely identifies this source germplasm field",
-                    "referencedAttribute": "referenceset",
+                    "description": "All known corresponding Germplasm",
                     "relationshipType": "one-to-many",
+                    "referencedAttribute": "referenceSet",
                     "items": {
-                        "$ref": "SourceGermplasm.json#/$defs/SourceGermplasm",
-                        "description": "sourceGermplasm"
+                        "$ref": "../BrAPI-Germplasm/Germplasm.json#/$defs/Germplasm",
+                        "description": "SourceGermplasm"
                     },
+                    "title": "SourceGermplasm",
                     "type": [
                         "null",
                         "array"
@@ -105,29 +94,22 @@
                         "string"
                     ]
                 },
-                "species": {
-                    "$ref": "Species.json#/$defs/Species",
+				"species": {
                     "description": "An ontology term describing an attribute.",
-                    "referencedAttribute": "referenceset",
-                    "relationshipType": "one-to-one"
+                    "relationshipType": "one-to-one",
+                    "referencedAttribute": "referenceSet",
+					"$ref": "../BrAPI-Common/OntologyTerm.json#/$defs/OntologyTerm"
                 },
                 "references": {
                     "title": "references",
-                    "description": "The ID which uniquely identifies this reference field",
+                    "description": "references",
                     "referencedAttribute": "referenceSet",
-                    "relationshipType": "one-to-many",
-                    "items": {
-                        "$ref": "Reference.json#/$defs/Reference",
-                        "description": "Reference"
-                    },
-                    "type": [
-                        "null",
-                        "array"
-                    ]
+                    "relationshipType": "one-to-one",
+					"$ref": "Reference.json#/$defs/Reference"
                 },
                 "variants": {
                     "title": "variants",
-                    "description": "The ID which uniquely identifies this variant field",
+                    "description": "variants",
                     "referencedAttribute": "referenceSet",
                     "relationshipType": "one-to-many",
                     "items": {
@@ -141,7 +123,7 @@
                 },
                 "variantSets": {
                     "title": "variantSets",
-                    "description": "The ID which uniquely identifies this variantSet field",
+                    "description": "variantSets",
                     "referencedAttribute": "referenceSet",
                     "relationshipType": "one-to-many",
                     "items": {
@@ -159,10 +141,11 @@
                 "referenceSetName"
             ],
             "title": "ReferenceSet",
-            "type": "object"
+            "type": "object",
+            "brapi-metadata": {
+                "primaryModel": true
+            }
         }
-        
-        
     },
     "$id": "https://brapi.org/Specification/BrAPI-Schema/BrAPI-Genotyping/ReferenceSet.json",
     "$schema": "http://json-schema.org/draft/2020-12/schema"

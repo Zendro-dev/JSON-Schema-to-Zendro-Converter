@@ -2,15 +2,20 @@
     "$defs": {
         "GermplasmAttributeValue": {
             "properties": {
-                "germplasmAttributeValueDbId": {
-                    "description": "The ID which uniquely identifies this attribute value within the given database server",
-                    "type": "string"
+                "additionalInfo": {
+                    "description": "A free space containing any additional information related to a particular object. A data source may provide any JSON object, unrestricted by the BrAPI specification.",
+                    "relationshipType": "one-to-one",
+                    "$ref": "../BrAPI-Common/AdditionalInfo.json#/$defs/AdditionalInfo"
                 },
                 "attribute": {
                     "$ref": "GermplasmAttribute.json#/$defs/GermplasmAttribute",
                     "description": "The ID which uniquely identifies this attribute within the given database server",
-                    "referencedAttribute": "germplasmAttributeValues",
-                    "relationshipType": "many-to-many"
+                    "referencedAttribute": "attributeValues",
+                    "relationshipType": "many-to-one"
+                },
+                "attributeValueDbId": {
+                    "description": "The ID which uniquely identifies this attribute value within the given database server",
+                    "type": "string"
                 },
                 "determinedDate": {
                     "description": "The date the value of this attribute was determined for a given germplasm",
@@ -18,6 +23,19 @@
                     "type": [
                         "null",
                         "string"
+                    ]
+                },
+                "externalReferences": {
+                    "description": "An array of external reference ids. These are references to this piece of data in an external system. Could be a simple string or a URI.",
+                    "relationshipType": "one-to-many",
+                    "items": {
+                        "$ref": "../BrAPI-Common/ExternalReference.json#/$defs/ExternalReference",
+                        "description": "ExternalReferences"
+                    },
+                    "title": "ExternalReferences",
+                    "type": [
+                        "null",
+                        "array"
                     ]
                 },
                 "germplasm": {
@@ -32,42 +50,16 @@
                         "null",
                         "string"
                     ]
-                },
-                "additionalInfo": {
-                    "title": "additionalInfo",
-                    "description": "A free space containing any additional information related to a particular object. A data source may provide any JSON object, unrestricted by the BrAPI specification.",
-                    "referencedAttribute": "germplasmAttributeValue",
-                    "relationshipType": "one-to-many",
-                    "items": {
-                        "$ref": "AdditionalInfo.json#/$defs/AdditionalInfo",
-                        "description": "AdditionalInfo"
-                    },
-                    "type": [
-                        "null",
-                        "array"
-                    ]
-                },
-                "externalReferences": {
-                    "title": "externalReferences",
-                    "description": "An array of external reference ids. These are references to this piece of data in an external system. Could be a simple string or a URI.",
-                    "referencedAttribute": "germplasmAttributeValue",
-                    "relationshipType": "one-to-many",
-                    "items": {
-                        "$ref": "ExternalReference.json#/$defs/ExternalReference",
-                        "description": "ExternalReference"
-                    },
-                    "type": [
-                        "null",
-                        "array"
-                    ]
                 }
             },
             "required": [
-                "germplasmAttributeValueDbId",
-                "attributeName"
+                "attribute"
             ],
             "title": "GermplasmAttributeValue",
-            "type": "object"
+            "type": "object",
+            "brapi-metadata": {
+                "primaryModel": true
+            }
         }
     },
     "$id": "https://brapi.org/Specification/BrAPI-Schema/BrAPI-Germplasm/GermplasmAttributeValue.json",

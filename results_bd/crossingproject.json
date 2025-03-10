@@ -2,13 +2,13 @@
     "model": "crossingproject",
     "storageType": "sql",
     "attributes": {
-        "crossingProjectDbId": {
-            "type": "[ String ]",
-            "description": "The unique identifier for a crossing project"
-        },
         "commonCropName": {
             "type": "String",
             "description": "the common name of a crop (for multi-crop systems)"
+        },
+        "crossingProjectDbId": {
+            "type": "String",
+            "description": "The unique identifier for a crossing project"
         },
         "crossingProjectDescription": {
             "type": "String",
@@ -18,15 +18,34 @@
             "type": "String",
             "description": "The human readable name for a crossing project"
         },
+        "additionalInfo_ID": "String",
+        "externalReferences_IDs": "[ String ]",
         "program_ID": "String",
         "crosses_IDs": "[ String ]",
         "plannedCrosses_IDs": "[ String ]",
-        "pedigreeNodes_IDs": "[ String ]",
-        "additionalInfo_IDs": "[ String ]",
-        "externalReferences_IDs": "[ String ]",
-        "potentialParents_IDs": "[ String ]"
+        "pedigreeNodes_IDs": "[ String ]"
     },
     "associations": {
+        "additionalInfo": {
+            "type": "one_to_one",
+            "implementation": "foreignkeys",
+            "reverseAssociation": "crossingProject",
+            "target": "additionalinfo",
+            "targetKey": "crossingProject_ID",
+            "sourceKey": "additionalInfo_ID",
+            "keysIn": "crossingproject",
+            "targetStorageType": "sql"
+        },
+        "externalReferences": {
+            "type": "one_to_many",
+            "implementation": "foreignkeys",
+            "reverseAssociation": "crossingProject",
+            "target": "externalreference",
+            "targetKey": "crossingProject_ID",
+            "sourceKey": "externalReferences_IDs",
+            "keysIn": "crossingproject",
+            "targetStorageType": "sql"
+        },
         "program": {
             "type": "many_to_one",
             "implementation": "foreignkeys",
@@ -64,36 +83,6 @@
             "target": "pedigreenode",
             "targetKey": "crossingProject_ID",
             "sourceKey": "pedigreeNodes_IDs",
-            "keysIn": "crossingproject",
-            "targetStorageType": "sql"
-        },
-        "additionalInfo": {
-            "type": "one_to_many",
-            "implementation": "foreignkeys",
-            "reverseAssociation": "crossingProject",
-            "target": "additionalinfo",
-            "targetKey": "crossingProject_ID",
-            "sourceKey": "additionalInfo_IDs",
-            "keysIn": "crossingproject",
-            "targetStorageType": "sql"
-        },
-        "externalReferences": {
-            "type": "one_to_many",
-            "implementation": "foreignkeys",
-            "reverseAssociation": "crossingProject",
-            "target": "externalreference",
-            "targetKey": "crossingProject_ID",
-            "sourceKey": "externalReferences_IDs",
-            "keysIn": "crossingproject",
-            "targetStorageType": "sql"
-        },
-        "potentialParents": {
-            "type": "many_to_many",
-            "implementation": "foreignkeys",
-            "reverseAssociation": "crossingProjects",
-            "target": "parent",
-            "targetKey": "crossingProjects_IDs",
-            "sourceKey": "potentialParents_IDs",
             "keysIn": "crossingproject",
             "targetStorageType": "sql"
         }

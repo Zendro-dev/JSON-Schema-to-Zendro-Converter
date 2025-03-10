@@ -3,22 +3,13 @@
         "Variant": {
             "properties": {
                 "additionalInfo": {
-                    "title": "additionalInfo",
                     "description": "A free space containing any additional information related to a particular object. A data source may provide any JSON object, unrestricted by the BrAPI specification.",
-                    "referencedAttribute": "variant",
-                    "relationshipType": "one-to-many",
-                    "items": {
-                        "$ref": "AdditionalInfo.json#/$defs/AdditionalInfo",
-                        "description": "AdditionalInfo"
-                    },
-                    "type": [
-                        "null",
-                        "array"
-                    ]
+                    "$ref": "../BrAPI-Common/AdditionalInfo.json#/$defs/AdditionalInfo",
+					"relationshipType": "one-to-one"
                 },
                 "markerPositions": {
                     "title": "markerPositions",
-                    "description": "The ID which uniquely identifies this marker position field",
+                    "description": "markerPositions",
                     "referencedAttribute": "variant",
                     "relationshipType": "one-to-many",
                     "items": {
@@ -46,7 +37,7 @@
                 },
                 "calls": {
                     "title": "Calls",
-                    "description": "The ID which uniquely identifies this call field",
+                    "description": "",
                     "referencedAttribute": "variant",
                     "relationshipType": "one-to-many",
                     "items": {
@@ -104,14 +95,13 @@
                     ]
                 },
                 "externalReferences": {
-                    "title": "externalReferences",
-                    "description": "The ID which uniquely identifies this external reference field",
-                    "referencedAttribute": "variant",
+                    "description": "An array of external reference ids. These are references to this piece of data in an external system. Could be a simple string or a URI.",
                     "relationshipType": "one-to-many",
                     "items": {
-                        "$ref": "ExternalReference.json#/$defs/ExternalReference",
-                        "description": "externalReferences"
+                        "$ref": "../BrAPI-Common/ExternalReference.json#/$defs/ExternalReference",
+                        "description": "ExternalReferences"
                     },
+                    "title": "ExternalReferences",
                     "type": [
                         "null",
                         "array"
@@ -214,7 +204,10 @@
                 "variantDbId"
             ],
             "title": "Variant",
-            "type": "object"
+            "type": "object",
+            "brapi-metadata": {
+                "primaryModel": true
+            }
         }
     },
     "$id": "https://brapi.org/Specification/BrAPI-Schema/BrAPI-Genotyping/Variant.json",

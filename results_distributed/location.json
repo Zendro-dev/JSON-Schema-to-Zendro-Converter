@@ -6,7 +6,6 @@
             "type": "String",
             "description": "A shortened version of the human readable name for a Location"
         },
-        "additionalInfo_IDs": "[ String ]",
         "coordinateDescription": {
             "type": "String",
             "description": "Describes the precision and landmarks of the coordinate values used for a Location. (ex. the site, the nearest town, a 10 kilometers radius circle, +/- 20 meters, etc)"
@@ -15,7 +14,6 @@
             "type": "String",
             "description": "Uncertainty associated with the coordinates in meters. Leave the value empty if the uncertainty is unknown."
         },
-        "coordinates_ID": "String",
         "countryCode": {
             "type": "String",
             "description": "[ISO_3166-1_alpha-3](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-3) spec\n<br/> MIAPPE V1.1 (DM-17) Geographic location (country) - The country where the experiment took place, either as a full name or preferably as a 2-letter code.'"
@@ -36,7 +34,6 @@
             "type": "String",
             "description": "Describes the level of protection/exposure for things like sun light and wind at a particular Location"
         },
-        "externalReferences_IDs": "[ String ]",
         "instituteAddress": {
             "type": "String",
             "description": "The street address of the institute at a particular Location\n<br/> MIAPPE V1.1 (DM-16) Contact institution - Name and address of the institution responsible for the study."
@@ -46,7 +43,7 @@
             "description": "The full name of the institute at a particular Location\n<br/> MIAPPE V1.1 (DM-16) Contact institution - Name and address of the institution responsible for the study."
         },
         "locationDbId": {
-            "type": "[ String ]",
+            "type": "String",
             "description": "The unique identifier for a Location"
         },
         "locationName": {
@@ -57,9 +54,6 @@
             "type": "String",
             "description": "A short description of a type of Location (ex. Field Station, Breeding Location, Storage Location, etc)"
         },
-        "parentLocation_ID": "String",
-        "childLocations_IDs": "[ String ]",
-        "studies_IDs": "[ String ]",
         "siteStatus": {
             "type": "String",
             "description": "Description of the accessibility of the location (ex. Public, Private)"
@@ -72,17 +66,23 @@
             "type": "String",
             "description": "Describes the topography of the land at a Location. (ex. Plateau, Cirque, Hill, Valley, etc)"
         },
+        "additionalInfo_ID": "String",
+        "coordinates_ID": "String",
+        "externalReferences_IDs": "[ String ]",
+        "parentLocation_ID": "String",
+        "childLocations_IDs": "[ String ]",
+        "studies_IDs": "[ String ]",
         "seedLots_IDs": "[ String ]",
         "observationUnits_IDs": "[ String ]"
     },
     "associations": {
         "additionalInfo": {
-            "type": "one_to_many",
+            "type": "one_to_one",
             "implementation": "foreignkeys",
             "reverseAssociation": "location",
             "target": "additionalinfo",
             "targetKey": "location_ID",
-            "sourceKey": "additionalInfo_IDs",
+            "sourceKey": "additionalInfo_ID",
             "keysIn": "location",
             "targetStorageType": "sql"
         },
@@ -90,7 +90,7 @@
             "type": "one_to_one",
             "implementation": "foreignkeys",
             "reverseAssociation": "location",
-            "target": "coordinate",
+            "target": "geojson",
             "targetKey": "location_ID",
             "sourceKey": "coordinates_ID",
             "keysIn": "location",

@@ -3,18 +3,9 @@
         "Person": {
             "properties": {
                 "additionalInfo": {
-                    "title": "additionalInfo",
                     "description": "A free space containing any additional information related to a particular object. A data source may provide any JSON object, unrestricted by the BrAPI specification.",
-                    "referencedAttribute": "person",
-                    "relationshipType": "one-to-many",
-                    "items": {
-                        "$ref": "AdditionalInfo.json#/$defs/AdditionalInfo",
-                        "description": "AdditionalInfo"
-                    },
-                    "type": [
-                        "null",
-                        "array"
-                    ]
+                    "$ref": "../BrAPI-Common/AdditionalInfo.json#/$defs/AdditionalInfo",
+					"relationshipType": "one-to-one"
                 },
                 "description": {
                     "description": "description of this person",
@@ -31,14 +22,13 @@
                     ]
                 },
                 "externalReferences": {
-                    "title": "externalReferences",
-                    "description": "The ID which uniquely identifies this external reference  field",
-                    "referencedAttribute": "person",
+                    "description": "An array of external reference ids. These are references to this piece of data in an external system. Could be a simple string or a URI.",
                     "relationshipType": "one-to-many",
                     "items": {
-                        "$ref": "ExternalReference.json#/$defs/ExternalReference",
-                        "description": "externalReferences"
+                        "$ref": "../BrAPI-Common/ExternalReference.json#/$defs/ExternalReference",
+                        "description": "ExternalReferences"
                     },
+                    "title": "ExternalReferences",
                     "type": [
                         "null",
                         "array"
@@ -92,7 +82,7 @@
                 },
                 "lists": {
                     "title": "Lists",
-                    "description": "The ID which uniquely identifies this list field",
+                    "description": "",
                     "referencedAttribute": "listOwnerPerson",
                     "relationshipType": "one-to-many",
                     "items": {
@@ -106,7 +96,7 @@
                 },
                 "programs": {
                     "title": "Programs",
-                    "description": "The ID which uniquely identifies this program field",
+                    "description": "",
                     "referencedAttribute": "leadPerson",
                     "relationshipType": "one-to-many",
                     "items": {
@@ -123,7 +113,10 @@
                 "personDbId"
             ],
             "title": "Person",
-            "type": "object"
+            "type": "object",
+            "brapi-metadata": {
+                "primaryModel": true
+            }
         }
     },
     "$id": "https://brapi.org/Specification/BrAPI-Schema/BrAPI-Core/Person.json",

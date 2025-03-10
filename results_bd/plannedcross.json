@@ -3,14 +3,9 @@
     "storageType": "sql",
     "attributes": {
         "plannedCrossDbId": {
-            "type": "[ String ]",
+            "type": "String",
             "description": "the unique identifier for a planned cross"
         },
-        "crossType": {
-            "type": "String",
-            "description": "the type of cross"
-        },
-        "crossingProject_ID": "String",
         "plannedCrossName": {
             "type": "String",
             "description": "the human readable name for a planned cross"
@@ -19,12 +14,22 @@
             "type": "String",
             "description": "The status of this planned cross. Is it waiting to be performed ('TODO'), has it been completed successfully ('DONE'), or has it not been done on purpose ('SKIPPED')."
         },
-        "crosses_IDs": "[ String ]",
-        "additionalInfo_IDs": "[ String ]",
+        "additionalInfo_ID": "String",
+        "crossingProject_ID": "String",
         "externalReferences_IDs": "[ String ]",
-        "parents_IDs": "[ String ]"
+        "crosses_IDs": "[ String ]"
     },
     "associations": {
+        "additionalInfo": {
+            "type": "one_to_one",
+            "implementation": "foreignkeys",
+            "reverseAssociation": "plannedCross",
+            "target": "additionalinfo",
+            "targetKey": "plannedCross_ID",
+            "sourceKey": "additionalInfo_ID",
+            "keysIn": "plannedcross",
+            "targetStorageType": "sql"
+        },
         "crossingProject": {
             "type": "many_to_one",
             "implementation": "foreignkeys",
@@ -32,26 +37,6 @@
             "target": "crossingproject",
             "targetKey": "plannedCrosses_IDs",
             "sourceKey": "crossingProject_ID",
-            "keysIn": "plannedcross",
-            "targetStorageType": "sql"
-        },
-        "crosses": {
-            "type": "one_to_many",
-            "implementation": "foreignkeys",
-            "reverseAssociation": "plannedCross",
-            "target": "cross",
-            "targetKey": "plannedCross_ID",
-            "sourceKey": "crosses_IDs",
-            "keysIn": "plannedcross",
-            "targetStorageType": "sql"
-        },
-        "additionalInfo": {
-            "type": "one_to_many",
-            "implementation": "foreignkeys",
-            "reverseAssociation": "plannedCross",
-            "target": "additionalinfo",
-            "targetKey": "plannedCross_ID",
-            "sourceKey": "additionalInfo_IDs",
             "keysIn": "plannedcross",
             "targetStorageType": "sql"
         },
@@ -65,13 +50,13 @@
             "keysIn": "plannedcross",
             "targetStorageType": "sql"
         },
-        "parents": {
-            "type": "many_to_many",
+        "crosses": {
+            "type": "one_to_many",
             "implementation": "foreignkeys",
-            "reverseAssociation": "plannedCrosses",
-            "target": "parent",
-            "targetKey": "plannedCrosses_IDs",
-            "sourceKey": "parents_IDs",
+            "reverseAssociation": "plannedCross",
+            "target": "cross",
+            "targetKey": "plannedCross_ID",
+            "sourceKey": "crosses_IDs",
             "keysIn": "plannedcross",
             "targetStorageType": "sql"
         }

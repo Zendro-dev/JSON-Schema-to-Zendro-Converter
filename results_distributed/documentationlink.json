@@ -2,15 +2,15 @@
     "model": "documentationlink",
     "storageType": "sql",
     "attributes": {
-        "documentationLinkDbId": {
-            "type": "[ String ]",
-            "description": "the unique identifier for a documentation link"
-        },
         "URL": {
             "type": "String",
             "description": ""
         },
         "type": {
+            "type": "String",
+            "description": ""
+        },
+        "documentationLinkDbId": {
             "type": "String",
             "description": ""
         },

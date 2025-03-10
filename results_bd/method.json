@@ -2,10 +2,8 @@
     "model": "method",
     "storageType": "sql",
     "attributes": {
-        "methodDbId": {
-            "type": "[ String ]",
-            "description": "Method unique identifier"
-        },
+        "variable_ID": "String",
+        "attribute_ID": "String",
         "bibliographicalReference": {
             "type": "String",
             "description": "Bibliographical reference describing the method.\n<br/>MIAPPE V1.1 (DM-91) Reference associated to the method - URI/DOI of reference describing the method."
@@ -22,6 +20,10 @@
             "type": "String",
             "description": "Method class (examples: \"Measurement\", \"Counting\", \"Estimation\", \"Computation\", etc.)"
         },
+        "methodDbId": {
+            "type": "String",
+            "description": "Method unique identifier"
+        },
         "methodName": {
             "type": "String",
             "description": "Human readable name for the method\n<br/>MIAPPE V1.1 (DM-88) Method  Name of the method of observation"
@@ -30,20 +32,40 @@
             "type": "String",
             "description": "The Permanent Unique Identifier of a Method, usually in the form of a URI"
         },
-        "additionalInfo_IDs": "[ String ]",
+        "additionalInfo_ID": "String",
         "externalReferences_IDs": "[ String ]",
         "ontologyReference_ID": "String",
-        "germplasmAttributes_IDs": "[ String ]",
-        "observationVariables_IDs": "[ String ]"
+        "observationVariable_ID": "String",
+        "germplasmAttribute_ID": "String"
     },
     "associations": {
+        "variable": {
+            "type": "one_to_one",
+            "implementation": "foreignkeys",
+            "reverseAssociation": "method",
+            "target": "variable",
+            "targetKey": "method_ID",
+            "sourceKey": "variable_ID",
+            "keysIn": "method",
+            "targetStorageType": "sql"
+        },
+        "attribute": {
+            "type": "one_to_one",
+            "implementation": "foreignkeys",
+            "reverseAssociation": "method",
+            "target": "attribute",
+            "targetKey": "method_ID",
+            "sourceKey": "attribute_ID",
+            "keysIn": "method",
+            "targetStorageType": "sql"
+        },
         "additionalInfo": {
-            "type": "one_to_many",
+            "type": "one_to_one",
             "implementation": "foreignkeys",
             "reverseAssociation": "method",
             "target": "additionalinfo",
             "targetKey": "method_ID",
-            "sourceKey": "additionalInfo_IDs",
+            "sourceKey": "additionalInfo_ID",
             "keysIn": "method",
             "targetStorageType": "sql"
         },
@@ -67,23 +89,23 @@
             "keysIn": "method",
             "targetStorageType": "sql"
         },
-        "germplasmAttributes": {
-            "type": "one_to_many",
-            "implementation": "foreignkeys",
-            "reverseAssociation": "method",
-            "target": "germplasmattribute",
-            "targetKey": "method_ID",
-            "sourceKey": "germplasmAttributes_IDs",
-            "keysIn": "method",
-            "targetStorageType": "sql"
-        },
-        "observationVariables": {
-            "type": "one_to_many",
+        "observationVariable": {
+            "type": "one_to_one",
             "implementation": "foreignkeys",
             "reverseAssociation": "method",
             "target": "observationvariable",
             "targetKey": "method_ID",
-            "sourceKey": "observationVariables_IDs",
+            "sourceKey": "observationVariable_ID",
+            "keysIn": "method",
+            "targetStorageType": "sql"
+        },
+        "germplasmAttribute": {
+            "type": "one_to_one",
+            "implementation": "foreignkeys",
+            "reverseAssociation": "method",
+            "target": "germplasmattribute",
+            "targetKey": "method_ID",
+            "sourceKey": "germplasmAttribute_ID",
             "keysIn": "method",
             "targetStorageType": "sql"
         }

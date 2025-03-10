@@ -2,10 +2,7 @@
     "model": "ontology",
     "storageType": "sql",
     "attributes": {
-        "ontologyDbId": {
-            "type": "[ String ]",
-            "description": "Ontology database unique identifier"
-        },
+        "ontologyReference_ID": "String",
         "authors": {
             "type": "String",
             "description": "Ontology's list of authors (no specific format)"
@@ -26,6 +23,10 @@
             "type": "String",
             "description": "Ontology licence"
         },
+        "ontologyDbId": {
+            "type": "String",
+            "description": "Ontology database unique identifier"
+        },
         "ontologyName": {
             "type": "String",
             "description": "Ontology name"
@@ -34,16 +35,26 @@
             "type": "String",
             "description": "Ontology version (no specific format)"
         },
-        "additionalInfo_IDs": "[ String ]"
+        "additionalInfo_ID": "String"
     },
     "associations": {
+        "ontologyReference": {
+            "type": "one_to_one",
+            "implementation": "foreignkeys",
+            "reverseAssociation": "ontology",
+            "target": "ontologyreference",
+            "targetKey": "ontology_ID",
+            "sourceKey": "ontologyReference_ID",
+            "keysIn": "ontology",
+            "targetStorageType": "sql"
+        },
         "additionalInfo": {
-            "type": "one_to_many",
+            "type": "one_to_one",
             "implementation": "foreignkeys",
             "reverseAssociation": "ontology",
             "target": "additionalinfo",
             "targetKey": "ontology_ID",
-            "sourceKey": "additionalInfo_IDs",
+            "sourceKey": "additionalInfo_ID",
             "keysIn": "ontology",
             "targetStorageType": "sql"
         }

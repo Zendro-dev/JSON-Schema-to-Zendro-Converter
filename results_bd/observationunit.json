@@ -2,13 +2,11 @@
     "model": "observationunit",
     "storageType": "sql",
     "attributes": {
+        "observationUnitLevelRelationship_ID": "String",
         "observationUnitDbId": {
-            "type": "[ String ]",
+            "type": "String",
             "description": "The ID which uniquely identifies an observation unit\n\nMIAPPE V1.1 (DM-70) Observation unit ID - Identifier used to identify the observation unit in data files containing the values observed or measured on that unit. Must be locally unique. "
         },
-        "cross_ID": "String",
-        "germplasm_ID": "String",
-        "location_ID": "String",
         "observationUnitName": {
             "type": "String",
             "description": "A human readable name for an observation unit"
@@ -17,20 +15,44 @@
             "type": "String",
             "description": "A Permanent Unique Identifier for an observation unit\n\nMIAPPE V1.1 (DM-72) External ID - Identifier for the observation unit in a persistent repository, comprises the name of the repository and the identifier of the observation unit therein. The EBI Biosamples repository can be used. URI are recommended when possible."
         },
+        "additionalInfo_ID": "String",
+        "cross_ID": "String",
+        "externalReferences_IDs": "[ String ]",
+        "germplasm_ID": "String",
+        "location_ID": "String",
+        "observationUnitPosition_IDs": "[ String ]",
         "program_ID": "String",
         "seedLot_ID": "String",
         "study_ID": "String",
+        "treatments_IDs": "[ String ]",
         "trial_ID": "String",
         "samples_IDs": "[ String ]",
         "events_IDs": "[ String ]",
         "images_IDs": "[ String ]",
         "observations_IDs": "[ String ]",
-        "additionalInfo_IDs": "[ String ]",
-        "externalReferences_IDs": "[ String ]",
-        "observationUnitPosition_ID": "String",
-        "treatments_IDs": "[ String ]"
+        "crossParent_IDs": "[ String ]"
     },
     "associations": {
+        "observationUnitLevelRelationship": {
+            "type": "one_to_one",
+            "implementation": "foreignkeys",
+            "reverseAssociation": "observationUnit",
+            "target": "observationunitlevelrelationship",
+            "targetKey": "observationUnit_ID",
+            "sourceKey": "observationUnitLevelRelationship_ID",
+            "keysIn": "observationunit",
+            "targetStorageType": "sql"
+        },
+        "additionalInfo": {
+            "type": "one_to_one",
+            "implementation": "foreignkeys",
+            "reverseAssociation": "observationUnit",
+            "target": "additionalinfo",
+            "targetKey": "observationUnit_ID",
+            "sourceKey": "additionalInfo_ID",
+            "keysIn": "observationunit",
+            "targetStorageType": "sql"
+        },
         "cross": {
             "type": "many_to_one",
             "implementation": "foreignkeys",
@@ -38,6 +60,16 @@
             "target": "cross",
             "targetKey": "observationUnits_IDs",
             "sourceKey": "cross_ID",
+            "keysIn": "observationunit",
+            "targetStorageType": "sql"
+        },
+        "externalReferences": {
+            "type": "one_to_many",
+            "implementation": "foreignkeys",
+            "reverseAssociation": "observationUnit",
+            "target": "externalreference",
+            "targetKey": "observationUnit_ID",
+            "sourceKey": "externalReferences_IDs",
             "keysIn": "observationunit",
             "targetStorageType": "sql"
         },
@@ -58,6 +90,16 @@
             "target": "location",
             "targetKey": "observationUnits_IDs",
             "sourceKey": "location_ID",
+            "keysIn": "observationunit",
+            "targetStorageType": "sql"
+        },
+        "observationUnitPosition": {
+            "type": "one_to_many",
+            "implementation": "foreignkeys",
+            "reverseAssociation": "observationUnit",
+            "target": "observationunitposition",
+            "targetKey": "observationUnit_ID",
+            "sourceKey": "observationUnitPosition_IDs",
             "keysIn": "observationunit",
             "targetStorageType": "sql"
         },
@@ -88,6 +130,16 @@
             "target": "study",
             "targetKey": "observationUnits_IDs",
             "sourceKey": "study_ID",
+            "keysIn": "observationunit",
+            "targetStorageType": "sql"
+        },
+        "treatments": {
+            "type": "one_to_many",
+            "implementation": "foreignkeys",
+            "reverseAssociation": "observationUnit",
+            "target": "treatment",
+            "targetKey": "observationUnit_ID",
+            "sourceKey": "treatments_IDs",
             "keysIn": "observationunit",
             "targetStorageType": "sql"
         },
@@ -141,43 +193,13 @@
             "keysIn": "observationunit",
             "targetStorageType": "sql"
         },
-        "additionalInfo": {
+        "crossParent": {
             "type": "one_to_many",
             "implementation": "foreignkeys",
             "reverseAssociation": "observationUnit",
-            "target": "additionalinfo",
+            "target": "crossparent",
             "targetKey": "observationUnit_ID",
-            "sourceKey": "additionalInfo_IDs",
-            "keysIn": "observationunit",
-            "targetStorageType": "sql"
-        },
-        "externalReferences": {
-            "type": "one_to_many",
-            "implementation": "foreignkeys",
-            "reverseAssociation": "observationUnit",
-            "target": "externalreference",
-            "targetKey": "observationUnit_ID",
-            "sourceKey": "externalReferences_IDs",
-            "keysIn": "observationunit",
-            "targetStorageType": "sql"
-        },
-        "observationUnitPosition": {
-            "type": "one_to_one",
-            "implementation": "foreignkeys",
-            "reverseAssociation": "observationUnit",
-            "target": "observationunitposition",
-            "targetKey": "observationUnit_ID",
-            "sourceKey": "observationUnitPosition_ID",
-            "keysIn": "observationunit",
-            "targetStorageType": "sql"
-        },
-        "treatments": {
-            "type": "many_to_many",
-            "implementation": "foreignkeys",
-            "reverseAssociation": "observationUnits",
-            "target": "treatment",
-            "targetKey": "observationUnits_IDs",
-            "sourceKey": "treatments_IDs",
+            "sourceKey": "crossParent_IDs",
             "keysIn": "observationunit",
             "targetStorageType": "sql"
         }

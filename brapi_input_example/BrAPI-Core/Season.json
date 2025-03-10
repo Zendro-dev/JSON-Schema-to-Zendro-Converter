@@ -19,27 +19,16 @@
                         "null",
                         "integer"
                     ]
-                },
-                "observations": {
-                    "title": "observations",
-                    "description": "Observations associated to this season",
-                    "referencedAttribute": "season",
-                    "relationshipType": "one-to-many",
-                    "items": {
-                        "$ref": "Observation.json#/$defs/Observation",
-                        "description": "Observation"
-                    },
-                    "type": [
-                        "null",
-                        "array"
-                    ]
                 }
             },
             "required": [
                 "seasonDbId"
             ],
             "title": "Season",
-            "type": "object"
+            "type": "object",
+            "brapi-metadata": {
+                "primaryModel": true
+            }
         }
     },
     "$id": "https://brapi.org/Specification/BrAPI-Schema/BrAPI-Core/Season.json",

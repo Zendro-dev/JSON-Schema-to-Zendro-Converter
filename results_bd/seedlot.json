@@ -2,12 +2,8 @@
     "model": "seedlot",
     "storageType": "sql",
     "attributes": {
-        "seedLotDbId": {
-            "type": "[ String ]",
-            "description": "Unique DbId for the Seed Lot"
-        },
         "amount": {
-            "type": "Float",
+            "type": "String",
             "description": "The current balance of the amount of material in a SeedLot. Could be a count (seeds, bulbs, etc) or a weight (kg of seed)."
         },
         "createdDate": {
@@ -18,8 +14,10 @@
             "type": "String",
             "description": "The timestamp for the last update to this Seed Lot (including transactions)"
         },
-        "location_ID": "String",
-        "program_ID": "String",
+        "seedLotDbId": {
+            "type": "String",
+            "description": "Unique DbId for the Seed Lot"
+        },
         "seedLotDescription": {
             "type": "String",
             "description": "A general description of this Seed Lot"
@@ -40,14 +38,46 @@
             "type": "String",
             "description": "A description of the things being counted in a SeedLot (seeds, bulbs, kg, tree, etc)"
         },
+        "additionalInfo_ID": "String",
+        "contentMixture_IDs": "[ String ]",
+        "externalReferences_IDs": "[ String ]",
+        "location_ID": "String",
+        "program_ID": "String",
         "fromSeedLotTransactions_IDs": "[ String ]",
         "toSeedLotTransactions_IDs": "[ String ]",
-        "observationUnits_IDs": "[ String ]",
-        "additionalInfo_IDs": "[ String ]",
-        "externalReferences_IDs": "[ String ]",
-        "contentMixture_IDs": "[ String ]"
+        "observationUnits_IDs": "[ String ]"
     },
     "associations": {
+        "additionalInfo": {
+            "type": "one_to_one",
+            "implementation": "foreignkeys",
+            "reverseAssociation": "seedLot",
+            "target": "additionalinfo",
+            "targetKey": "seedLot_ID",
+            "sourceKey": "additionalInfo_ID",
+            "keysIn": "seedlot",
+            "targetStorageType": "sql"
+        },
+        "contentMixture": {
+            "type": "one_to_many",
+            "implementation": "foreignkeys",
+            "reverseAssociation": "seedLot",
+            "target": "contentmixture",
+            "targetKey": "seedLot_ID",
+            "sourceKey": "contentMixture_IDs",
+            "keysIn": "seedlot",
+            "targetStorageType": "sql"
+        },
+        "externalReferences": {
+            "type": "one_to_many",
+            "implementation": "foreignkeys",
+            "reverseAssociation": "seedLot",
+            "target": "externalreference",
+            "targetKey": "seedLot_ID",
+            "sourceKey": "externalReferences_IDs",
+            "keysIn": "seedlot",
+            "targetStorageType": "sql"
+        },
         "location": {
             "type": "many_to_one",
             "implementation": "foreignkeys",
@@ -95,36 +125,6 @@
             "target": "observationunit",
             "targetKey": "seedLot_ID",
             "sourceKey": "observationUnits_IDs",
-            "keysIn": "seedlot",
-            "targetStorageType": "sql"
-        },
-        "additionalInfo": {
-            "type": "one_to_many",
-            "implementation": "foreignkeys",
-            "reverseAssociation": "seedLot",
-            "target": "additionalinfo",
-            "targetKey": "seedLot_ID",
-            "sourceKey": "additionalInfo_IDs",
-            "keysIn": "seedlot",
-            "targetStorageType": "sql"
-        },
-        "externalReferences": {
-            "type": "one_to_many",
-            "implementation": "foreignkeys",
-            "reverseAssociation": "seedLot",
-            "target": "externalreference",
-            "targetKey": "seedLot_ID",
-            "sourceKey": "externalReferences_IDs",
-            "keysIn": "seedlot",
-            "targetStorageType": "sql"
-        },
-        "contentMixture": {
-            "type": "many_to_many",
-            "implementation": "foreignkeys",
-            "reverseAssociation": "seedLot",
-            "target": "contentmixture",
-            "targetKey": "seedLot_IDs",
-            "sourceKey": "contentMixture_IDs",
             "keysIn": "seedlot",
             "targetStorageType": "sql"
         }

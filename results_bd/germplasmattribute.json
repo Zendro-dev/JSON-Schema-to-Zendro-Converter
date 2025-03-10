@@ -3,31 +3,35 @@
     "storageType": "sql",
     "attributes": {
         "germplasmAttributeDbId": {
-            "type": "[ String ]",
-            "description": "The ID which uniquely identifies this attribute within the given database server"
-        },
-        "attributeName": {
             "type": "String",
-            "description": "The human readable identifier of a germplasm attribute"
+            "description": ""
         },
         "attributeCategory": {
             "type": "String",
             "description": "General category for the attribute. very similar to Trait class."
         },
-        "attributeDescription": {
+        "attributeDbId": {
             "type": "String",
-            "description": "A human readable description of this attribute"
+            "description": "The ID which uniquely identifies this attribute within the given database server"
+        },
+        "attributeName": {
+            "type": "String",
+            "description": "A human readable name for this attribute"
         },
         "attributePUI": {
             "type": "String",
             "description": "The Permanent Unique Identifier of an Attribute, usually in the form of a URI"
+        },
+        "attributeDescription": {
+            "type": "String",
+            "description": "A human readable description of this attribute"
         },
         "commonCropName": {
             "type": "String",
             "description": "Crop name (examples: \"Maize\", \"Wheat\")"
         },
         "contextOfUse": {
-            "type": "[ String ]",
+            "type": "String",
             "description": "Indication of how trait is routinely used. (examples: [\"Trial evaluation\", \"Nursery evaluation\"])"
         },
         "defaultValue": {
@@ -63,11 +67,15 @@
             "description": "Timestamp when the Variable was added (ISO 8601)"
         },
         "synonyms": {
-            "type": "[ String ]",
+            "type": "String",
             "description": "Other variable names"
         },
-        "germplasmAttributeValues_IDs": "[ String ]",
-        "additionalInfo_IDs": "[ String ]",
+        "variableDbId": {
+            "type": "String",
+            "description": ""
+        },
+        "attributeValues_IDs": "[ String ]",
+        "additionalInfo_ID": "String",
         "externalReferences_IDs": "[ String ]",
         "method_ID": "String",
         "ontologyReference_ID": "String",
@@ -75,23 +83,23 @@
         "trait_ID": "String"
     },
     "associations": {
-        "germplasmAttributeValues": {
-            "type": "many_to_many",
+        "attributeValues": {
+            "type": "one_to_many",
             "implementation": "foreignkeys",
             "reverseAssociation": "attribute",
             "target": "germplasmattributevalue",
-            "targetKey": "attribute_IDs",
-            "sourceKey": "germplasmAttributeValues_IDs",
+            "targetKey": "attribute_ID",
+            "sourceKey": "attributeValues_IDs",
             "keysIn": "germplasmattribute",
             "targetStorageType": "sql"
         },
         "additionalInfo": {
-            "type": "one_to_many",
+            "type": "one_to_one",
             "implementation": "foreignkeys",
             "reverseAssociation": "germplasmAttribute",
             "target": "additionalinfo",
             "targetKey": "germplasmAttribute_ID",
-            "sourceKey": "additionalInfo_IDs",
+            "sourceKey": "additionalInfo_ID",
             "keysIn": "germplasmattribute",
             "targetStorageType": "sql"
         },
@@ -106,11 +114,11 @@
             "targetStorageType": "sql"
         },
         "method": {
-            "type": "many_to_one",
+            "type": "one_to_one",
             "implementation": "foreignkeys",
-            "reverseAssociation": "germplasmAttributes",
+            "reverseAssociation": "germplasmAttribute",
             "target": "method",
-            "targetKey": "germplasmAttributes_IDs",
+            "targetKey": "germplasmAttribute_ID",
             "sourceKey": "method_ID",
             "keysIn": "germplasmattribute",
             "targetStorageType": "sql"

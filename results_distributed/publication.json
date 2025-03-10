@@ -2,11 +2,15 @@
     "model": "publication",
     "storageType": "sql",
     "attributes": {
-        "publicationDbId": {
-            "type": "[ String ]",
+        "publicationPUI": {
+            "type": "String",
             "description": ""
         },
         "publicationReference": {
+            "type": "String",
+            "description": ""
+        },
+        "publicationDbId": {
             "type": "String",
             "description": ""
         },

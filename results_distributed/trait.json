@@ -2,12 +2,10 @@
     "model": "trait",
     "storageType": "mongodb",
     "attributes": {
-        "traitDbId": {
-            "type": "[ String ]",
-            "description": "The ID which uniquely identifies a trait"
-        },
+        "variable_ID": "String",
+        "observationVariable_ID": "String",
         "alternativeAbbreviations": {
-            "type": "[ String ]",
+            "type": "String",
             "description": "A list of shortened, human readable, names for a Trait. These abbreviations are acceptable alternatives to the mainAbbreviation and do not need to follow any formatting convention."
         },
         "attribute": {
@@ -35,12 +33,16 @@
             "description": "Trait status (examples: \"recommended\", \"obsolete\", \"legacy\", etc.)"
         },
         "synonyms": {
-            "type": "[ String ]",
+            "type": "String",
             "description": "Other trait names"
         },
         "traitClass": {
             "type": "String",
             "description": "A classification to describe the type of trait and the context it should be considered in.\n<br/> examples- \"morphological\", \"phenological\", \"agronomical\", \"physiological\", \"abiotic stress\", \"biotic stress\", \"biochemical\", \"quality traits\", \"fertility\", etc."
+        },
+        "traitDbId": {
+            "type": "String",
+            "description": "The ID which uniquely identifies a trait"
         },
         "traitDescription": {
             "type": "String",
@@ -54,20 +56,39 @@
             "type": "String",
             "description": "The Permanent Unique Identifier of a Trait, usually in the form of a URI"
         },
-        "additionalInfo_IDs": "[ String ]",
+        "additionalInfo_ID": "String",
         "externalReferences_IDs": "[ String ]",
         "ontologyReference_ID": "String",
-        "germplasmAttribute_ID": "String",
-        "observationVariables_IDs": "[ String ]"
+        "germplasmAttribute_ID": "String"
     },
     "associations": {
+        "variable": {
+            "type": "one_to_one",
+            "implementation": "foreignkeys",
+            "reverseAssociation": "trait",
+            "target": "variable",
+            "targetKey": "trait_ID",
+            "sourceKey": "variable_ID",
+            "keysIn": "trait",
+            "targetStorageType": "sql"
+        },
+        "observationVariable": {
+            "type": "one_to_one",
+            "implementation": "foreignkeys",
+            "reverseAssociation": "trait",
+            "target": "observationvariable",
+            "targetKey": "trait_ID",
+            "sourceKey": "observationVariable_ID",
+            "keysIn": "trait",
+            "targetStorageType": "sql"
+        },
         "additionalInfo": {
-            "type": "one_to_many",
+            "type": "one_to_one",
             "implementation": "foreignkeys",
             "reverseAssociation": "trait",
             "target": "additionalinfo",
             "targetKey": "trait_ID",
-            "sourceKey": "additionalInfo_IDs",
+            "sourceKey": "additionalInfo_ID",
             "keysIn": "trait",
             "targetStorageType": "sql"
         },
@@ -98,16 +119,6 @@
             "target": "germplasmattribute",
             "targetKey": "trait_ID",
             "sourceKey": "germplasmAttribute_ID",
-            "keysIn": "trait",
-            "targetStorageType": "sql"
-        },
-        "observationVariables": {
-            "type": "one_to_many",
-            "implementation": "foreignkeys",
-            "reverseAssociation": "trait",
-            "target": "observationvariable",
-            "targetKey": "trait_ID",
-            "sourceKey": "observationVariables_IDs",
             "keysIn": "trait",
             "targetStorageType": "sql"
         }

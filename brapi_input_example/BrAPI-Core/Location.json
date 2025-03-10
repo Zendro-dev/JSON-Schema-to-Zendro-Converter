@@ -10,18 +10,9 @@
                     ]
                 },
                 "additionalInfo": {
-                    "title": "additionalInfo",
                     "description": "A free space containing any additional information related to a particular object. A data source may provide any JSON object, unrestricted by the BrAPI specification.",
-                    "referencedAttribute": "location",
-                    "relationshipType": "one-to-many",
-                    "items": {
-                        "$ref": "AdditionalInfo.json#/$defs/AdditionalInfo",
-                        "description": "AdditionalInfo"
-                    },
-                    "type": [
-                        "null",
-                        "array"
-                    ]
+                    "$ref": "../BrAPI-Common/AdditionalInfo.json#/$defs/AdditionalInfo",
+					"relationshipType": "one-to-one"
                 },
                 "coordinateDescription": {
                     "description": "Describes the precision and landmarks of the coordinate values used for a Location. (ex. the site, the nearest town, a 10 kilometers radius circle, +/- 20 meters, etc)",
@@ -38,12 +29,10 @@
                     ]
                 },
                 "coordinates": {
-                    "$ref": "Coordinate.json#/$defs/Coordinate",
-                    "description": "The ID which uniquely identifies this coordinate field",
-                    "referencedAttribute": "location",
-                    "relationshipType": "one-to-one"
+                    "description": "One geometry as defined by GeoJSON (RFC 7946). All coordinates are decimal values on the WGS84 geographic coordinate reference system.\n\nCopied from RFC 7946 Section 3.1.1\n\nA position is an array of numbers. There MUST be two or more elements. The first two elements are longitude and latitude, or\neasting and northing, precisely in that order and using decimal numbers. Altitude or elevation MAY be included as an optional third element.",
+                    "relationshipType": "one-to-one",
+                    "$ref": "../BrAPI-Common/GeoJSON.json#/$defs/GeoJSON"
                 },
-                
                 "countryCode": {
                     "description": "[ISO_3166-1_alpha-3](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-3) spec\n<br/> MIAPPE V1.1 (DM-17) Geographic location (country) - The country where the experiment took place, either as a full name or preferably as a 2-letter code.'",
                     "type": [
@@ -81,20 +70,18 @@
                     ]
                 },
                 "externalReferences": {
-                    "title": "externalReferences",
-                    "description": "The ID which uniquely identifies this external reference field",
-                    "referencedAttribute": "location",
+                    "description": "An array of external reference ids. These are references to this piece of data in an external system. Could be a simple string or a URI.",
                     "relationshipType": "one-to-many",
                     "items": {
-                        "$ref": "ExternalReference.json#/$defs/ExternalReference",
-                        "description": "externalReferences"
+                        "$ref": "../BrAPI-Common/ExternalReference.json#/$defs/ExternalReference",
+                        "description": "ExternalReferences"
                     },
+                    "title": "ExternalReferences",
                     "type": [
                         "null",
                         "array"
                     ]
                 },
-                
                 "instituteAddress": {
                     "description": "The street address of the institute at a particular Location\n<br/> MIAPPE V1.1 (DM-16) Contact institution - Name and address of the institution responsible for the study.",
                     "type": [
@@ -132,7 +119,7 @@
                 },
                 "childLocations": {
                     "title": "ChildLocations",
-                    "description": "The ID which uniquely identifies this child location field",
+                    "description": "",
                     "referencedAttribute": "parentLocation",
                     "relationshipType": "one-to-many",
                     "items": {
@@ -146,7 +133,7 @@
                 },
                 "studies": {
                     "title": "Studies",
-                    "description": "The ID which uniquely identifies this study field",
+                    "description": "",
                     "referencedAttribute": "location",
                     "relationshipType": "one-to-many",
                     "items": {
@@ -180,12 +167,12 @@
                     ]
                 },
                 "seedLots": {
-                    "title": "seedLots",
-                    "description": "The ID which uniquely identifies this seed lot field",
+                    "title": "SeedLots",
+                    "description": "seedLots",
                     "referencedAttribute": "location",
                     "relationshipType": "one-to-many",
                     "items": {
-                        "$ref": "SeedLot.json#/$defs/SeedLot",
+                        "$ref": "../BrAPI-Germplasm/SeedLot.json#/$defs/SeedLot",
                         "description": "SeedLot"
                     },
                     "type": [
@@ -194,12 +181,12 @@
                     ]
                 },
                 "observationUnits": {
-                    "title": "observationUnits",
-                    "description": "The ID which uniquely identifies this observation Unit field",
+                    "title": "ObservationUnits",
+                    "description": "observationUnits",
                     "referencedAttribute": "location",
                     "relationshipType": "one-to-many",
                     "items": {
-                        "$ref": "ObservationUnit.json#/$defs/ObservationUnit",
+                        "$ref": "../BrAPI-Phenotyping/ObservationUnit.json#/$defs/ObservationUnit",
                         "description": "ObservationUnit"
                     },
                     "type": [
@@ -213,9 +200,11 @@
                 "locationName"
             ],
             "title": "Location",
-            "type": "object"
+            "type": "object",
+            "brapi-metadata": {
+                "primaryModel": true
+            }
         }
-        
     },
     "$id": "https://brapi.org/Specification/BrAPI-Schema/BrAPI-Core/Location.json",
     "$schema": "http://json-schema.org/draft/2020-12/schema"

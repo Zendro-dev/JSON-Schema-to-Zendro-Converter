@@ -3,7 +3,7 @@
     "storageType": "sql",
     "attributes": {
         "analysisDbId": {
-            "type": "[ String ]",
+            "type": "String",
             "description": "Unique identifier for this analysis description"
         },
         "analysisName": {
@@ -19,7 +19,7 @@
             "description": "A human readable description of the analysis"
         },
         "software": {
-            "type": "[ String ]",
+            "type": "String",
             "description": "The software run to generate this analysis."
         },
         "type": {
@@ -30,16 +30,16 @@
             "type": "String",
             "description": "The time at which this record was last updated, in ISO 8601 format."
         },
-        "variantset_ID": "String"
+        "variantSet_ID": "String"
     },
     "associations": {
-        "variantset": {
+        "variantSet": {
             "type": "many_to_one",
             "implementation": "foreignkeys",
             "reverseAssociation": "analysis",
             "target": "variantset",
             "targetKey": "analysis_IDs",
-            "sourceKey": "variantset_ID",
+            "sourceKey": "variantSet_ID",
             "keysIn": "analysis",
             "targetStorageType": "sql"
         }

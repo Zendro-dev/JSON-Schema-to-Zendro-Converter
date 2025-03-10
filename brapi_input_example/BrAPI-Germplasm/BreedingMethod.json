@@ -2,16 +2,16 @@
     "$defs": {
         "BreedingMethod": {
             "properties": {
-                "breedingMethodDbId": {
-                    "description": "the unique identifier for this breeding method",
-                    "type": "string"
-                },
                 "abbreviation": {
                     "description": "A shortened version of the human readable name for a Breeding Method",
                     "type": [
                         "null",
                         "string"
                     ]
+                },
+                "breedingMethodDbId": {
+                    "description": "the unique identifier for this breeding method",
+                    "type": "string"
                 },
                 "breedingMethodName": {
                     "description": "the human readable identifier for this breeding method",
@@ -63,9 +63,12 @@
                 "description"
             ],
             "title": "Breeding Method",
-            "type": "object"
+            "type": "object",
+            "brapi-metadata": {
+                "primaryModel": true
+            }
         }
     },
-    "$id": "https://brapi.org/Specification/BrAPI-Schema/BrAPI-Germplasm/Breeding Method.json",
+    "$id": "https://brapi.org/Specification/BrAPI-Schema/BrAPI-Germplasm/BreedingMethod.json",
     "$schema": "http://json-schema.org/draft/2020-12/schema"
 }

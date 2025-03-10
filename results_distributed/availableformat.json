@@ -2,16 +2,12 @@
     "model": "availableformat",
     "storageType": "sql",
     "attributes": {
-        "availableFormatDbId": {
-            "type": "[ String ]",
-            "description": "The ID which uniquely identifies this format"
-        },
         "dataFormat": {
             "type": "String",
             "description": "dataFormat defines the structure of the data within a file (ie DartSeq, VCF, Hapmap, tabular, etc)"
         },
         "expandHomozygotes": {
-            "type": "Boolean",
+            "type": "String",
             "description": "Should homozygotes be expanded (true) or collapsed into a single occurrence (false)"
         },
         "fileFormat": {
@@ -34,16 +30,20 @@
             "type": "String",
             "description": "The string used as a representation for missing data."
         },
-        "variantset_ID": "String"
+        "availableFormatDbId": {
+            "type": "String",
+            "description": ""
+        },
+        "variantSet_ID": "String"
     },
     "associations": {
-        "variantset": {
+        "variantSet": {
             "type": "many_to_one",
             "implementation": "foreignkeys",
             "reverseAssociation": "availableFormats",
             "target": "variantset",
             "targetKey": "availableFormats_IDs",
-            "sourceKey": "variantset_ID",
+            "sourceKey": "variantSet_ID",
             "keysIn": "availableformat",
             "targetStorageType": "sql"
         }

@@ -10,18 +10,9 @@
                     ]
                 },
                 "additionalInfo": {
-                    "title": "additionalInfo",
                     "description": "A free space containing any additional information related to a particular object. A data source may provide any JSON object, unrestricted by the BrAPI specification.",
-                    "referencedAttribute": "study",
-                    "relationshipType": "one-to-many",
-                    "items": {
-                        "$ref": "AdditionalInfo.json#/$defs/AdditionalInfo",
-                        "description": "AdditionalInfo"
-                    },
-                    "type": [
-                        "null",
-                        "array"
-                    ]
+                    "$ref": "../BrAPI-Common/AdditionalInfo.json#/$defs/AdditionalInfo",
+					"relationshipType": "one-to-one"
                 },
                 "commonCropName": {
                     "description": "Common name for the crop associated with this study",
@@ -31,13 +22,10 @@
                     ]
                 },
                 "contacts": {
-                    "title": "contacts",
-                    "description": "The ID which uniquely identifies this contact field",
-                    "referencedAttribute": "study",
-                    "relationshipType": "one-to-many",
+                    "description": "List of contact entities associated with this study",
+                    "relationshipType": "many-to-many",
                     "items": {
-                        "$ref": "Contact.json#/$defs/Contact",
-                        "description": "contacts"
+                        "$ref": "Contact.json#/$defs/Contact"
                     },
                     "type": [
                         "null",
@@ -52,13 +40,9 @@
                     ]
                 },
                 "dataLinks": {
-                    "title": "dataLinks",
-                    "description": "The ID which uniquely identifies this data link field",
-                    "referencedAttribute": "study",
-                    "relationshipType": "one-to-many",
+                    "description": "List of links to extra data files associated with this study. Extra data could include notes, images, and reference data.",
                     "items": {
-                        "$ref": "Study.json#/$defs/DataLink",
-                        "description": "dataLinks"
+                        "$ref": "DataLink.json#/$defs/DataLink"
                     },
                     "type": [
                         "null",
@@ -82,51 +66,49 @@
                     ]
                 },
                 "environmentParameters": {
-                    "title": "environmentParameters",
-                    "description": "The ID which uniquely identifies this environment parameter field",
-                    "referencedAttribute": "study",
+                    "description": "Environmental parameters that were kept constant throughout the study and did not change between observation units.\n\nMIAPPE V1.1 (DM-57) Environment - Environmental parameters that were kept constant throughout the study and did not change between observation units or assays. Environment characteristics that vary over time, i.e. environmental variables, should be recorded as Observed Variables (see below).",
                     "relationshipType": "one-to-many",
+                    "referencedAttribute": "study",
                     "items": {
-                        "$ref": "Study.json#/$defs/EnvironmentParameter",
-                        "description": "environmentParameters"
+                        "$ref": "../BrAPI-Core/Study.json#/$defs/EnvironmentParameters",
+                        "description": "EnvironmentParameters"
                     },
+                    "title": "EnvironmentParameters",
                     "type": [
                         "null",
                         "array"
                     ]
                 },
                 "experimentalDesign": {
-                    "$ref": "Study.json#/$defs/ExperimentalDesign",
                     "description": "The experimental and statistical design full description plus a category PUI taken from crop research ontology or agronomy ontology",
+                    "relationshipType": "one-to-one",
                     "referencedAttribute": "study",
-                    "relationshipType": "one-to-one"
+                    "$ref": "../BrAPI-Core/Study.json#/$defs/ExperimentalDesign"
                 },
                 "externalReferences": {
-                    "title": "externalReferences",
-                    "description": "The ID which uniquely identifies this external reference field",
-                    "referencedAttribute": "study",
+                    "description": "An array of external reference ids. These are references to this piece of data in an external system. Could be a simple string or a URI.",
                     "relationshipType": "one-to-many",
                     "items": {
-                        "$ref": "ExternalReference.json#/$defs/ExternalReference",
-                        "description": "externalReferences"
+                        "$ref": "../BrAPI-Common/ExternalReference.json#/$defs/ExternalReference",
+                        "description": "ExternalReferences"
                     },
+                    "title": "ExternalReferences",
                     "type": [
                         "null",
                         "array"
                     ]
                 },
                 "growthFacility": {
-                    "$ref": "Study.json#/$defs/GrowthFacility",
                     "description": "Short description of the facility in which the study was carried out.",
+                    "relationshipType": "many-to-one",
                     "referencedAttribute": "study",
-                    "relationshipType": "one-to-one"
+					"$ref": "../BrAPI-Core/Study.json#/$defs/GrowthFacility"
                 },
-
                 "lastUpdate": {
-                    "$ref": "Study.json#/$defs/LastUpdate",
                     "description": "The date and time when this study was last modified",
+                    "relationshipType": "one-to-one",
                     "referencedAttribute": "study",
-                    "relationshipType": "one-to-one"
+                    "$ref": "../BrAPI-Core/Study.json#/$defs/LastUpdate"
                 },
                 "license": {
                     "description": "The usage license associated with the study data",
@@ -136,20 +118,19 @@
                     ]
                 },
                 "location": {
-                    "$ref": "../../../../../Laszl/Downloads/Zendro-Converter-model_separation/BrAPI-Schema/BrAPI-Core/Location.json#/$defs/Location",
+                    "$ref": "Location.json#/$defs/Location",
                     "description": "The unique identifier for a Location",
                     "referencedAttribute": "studies",
                     "relationshipType": "many-to-one"
                 },
                 "observationLevels": {
-                    "title": "observationLevels",
-                    "description": "The ID which uniquely identifies this observation level field",
-                    "referencedAttribute": "study",
+                    "description": "Observation levels indicate the granularity level at which the measurements are taken. `levelName` \ndefines the level, `levelOrder` defines where that level exists in the hierarchy of levels. \n`levelOrder`s lower numbers are at the top of the hierarchy (ie field > 0) and higher numbers are \nat the bottom of the hierarchy (ie plant > 6). \n\n**Standard Level Names: study, field, entry, rep, block, sub-block, plot, sub-plot, plant, pot, sample** \n\nFor more information on Observation Levels, please review the <a target=\"_blank\" href=\"https://wiki.brapi.org/index.php/Observation_Levels\">Observation Levels documentation</a>. ",
                     "relationshipType": "one-to-many",
                     "items": {
-                        "$ref": "ObservationUnit.json#/$defs/ObservationLevel",
-                        "description": "observationLevels"
+                        "$ref": "../BrAPI-Common/ObservationUnitHierarchyLevel.json#/$defs/ObservationUnitHierarchyLevel",
+                        "description": "ObservationLevels"
                     },
+                    "title": "ObservationLevels",
                     "type": [
                         "null",
                         "array"
@@ -165,7 +146,7 @@
                 "observationVariables": {
                     "description": "The list of Observation Variables being used in this study. \n\nThis list is intended to be the wishlist of variables to collect in this study. It may or may not match the set of variables used in the collected observation records. ",
                     "items": {
-                        "$ref": "ObservationVariable.json#/$defs/ObservationVariable"
+                        "$ref": "../BrAPI-Phenotyping/ObservationVariable.json#/$defs/ObservationVariable"
                     },
                     "referencedAttribute": "studies",
                     "relationshipType": "many-to-many",
@@ -226,18 +207,18 @@
                     ]
                 },
                 "trial": {
-                    "$ref": "../../../../../Laszl/Downloads/Zendro-Converter-model_separation/BrAPI-Schema/BrAPI-Core/Trial.json#/$defs/Trial",
+                    "$ref": "Trial.json#/$defs/Trial",
                     "description": "The ID which uniquely identifies a trial",
                     "referencedAttribute": "studies",
                     "relationshipType": "many-to-one"
                 },
                 "callSets": {
                     "title": "CallSets",
-                    "description": "The ID which uniquely identifies this callset field",
+                    "description": "",
                     "referencedAttribute": "study",
                     "relationshipType": "one-to-many",
                     "items": {
-                        "$ref": "CallSet.json#/$defs/CallSet",
+                        "$ref": "../BrAPI-Genotyping/CallSet.json#/$defs/CallSet",
                         "description": "CallSet"
                     },
                     "type": [
@@ -247,11 +228,11 @@
                 },
                 "plates": {
                     "title": "plates",
-                    "description": "The ID which uniquely identifies this plate field",
+                    "description": "plates",
                     "referencedAttribute": "study",
                     "relationshipType": "one-to-many",
                     "items": {
-                        "$ref": "Plate.json#/$defs/Plate",
+                        "$ref": "../BrAPI-Genotyping/Plate.json#/$defs/Plate",
                         "description": "Plate"
                     },
                     "type": [
@@ -261,11 +242,11 @@
                 },
                 "samples": {
                     "title": "samples",
-                    "description": "The ID which uniquely identifies this sample field",
+                    "description": "samples",
                     "referencedAttribute": "study",
                     "relationshipType": "one-to-many",
                     "items": {
-                        "$ref": "Sample.json#/$defs/Sample",
+                        "$ref": "../BrAPI-Genotyping/Sample.json#/$defs/Sample",
                         "description": "Sample"
                     },
                     "type": [
@@ -275,11 +256,11 @@
                 },
                 "variantSets": {
                     "title": "variantSets",
-                    "description": "The ID which uniquely identifies this variantSet field",
+                    "description": "variantSets",
                     "referencedAttribute": "study",
                     "relationshipType": "one-to-many",
                     "items": {
-                        "$ref": "VariantSet.json#/$defs/VariantSet",
+                        "$ref": "../BrAPI-Genotyping/VariantSet.json#/$defs/VariantSet",
                         "description": "VariantSet"
                     },
                     "type": [
@@ -293,7 +274,7 @@
                     "referencedAttribute": "study",
                     "relationshipType": "many-to-many",
                     "items": {
-                        "$ref": "Event.json#/$defs/Event",
+                        "$ref": "../BrAPI-Phenotyping/Event.json#/$defs/Event",
                         "description": "Event"
                     },
                     "type": [
@@ -303,11 +284,11 @@
                 },
                 "observations": {
                     "title": "observations",
-                    "description": "The ID which uniquely identifies this observation field",
+                    "description": "observations",
                     "referencedAttribute": "study",
                     "relationshipType": "one-to-many",
                     "items": {
-                        "$ref": "Observation.json#/$defs/Observation",
+                        "$ref": "../BrAPI-Phenotyping/Observation.json#/$defs/Observation",
                         "description": "Observation"
                     },
                     "type": [
@@ -317,11 +298,11 @@
                 },
                 "observationUnits": {
                     "title": "observationUnits",
-                    "description": "The ID which uniquely identifies this observation unit field",
+                    "description": "observationUnits",
                     "referencedAttribute": "study",
                     "relationshipType": "one-to-many",
                     "items": {
-                        "$ref": "ObservationUnit.json#/$defs/ObservationUnit",
+                        "$ref": "../BrAPI-Phenotyping/ObservationUnit.json#/$defs/ObservationUnit",
                         "description": "ObservationUnit"
                     },
                     "type": [
@@ -335,91 +316,18 @@
                 "studyDbId"
             ],
             "title": "Study",
-            "type": "object"
+            "type": "object",
+            "brapi-metadata": {
+                "primaryModel": true
+            }
         },
-        "DataLink": {
+        "EnvironmentParameters": {
             "properties": {
-                "dataLinkDbId": {
-                    "description": "The ID which uniquely identifies this datalink",
+                "description": {
+                    "description": "Human-readable value of the environment parameter (defined above) constant within the experiment",
                     "type": "string"
                 },
-                "dataFormat": {
-                    "description": "The structure of the data within a file. For example - VCF, table, image archive, multispectral image archives in EDAM ontology (used in Galaxy)\n\nMIAPPE V1.1 (DM-38) Data file description - Description of the format of the data file. May be a standard file format name, or a description of organization of the data in a tabular file.",
-                    "type": [
-                        "null",
-                        "string"
-                    ]
-                },
-                "description": {
-                    "description": "The general description of this data link\n\nMIAPPE V1.1 (DM-38) Data file description - Description of the format of the data file. May be a standard file format name, or a description of organization of the data in a tabular file.",
-                    "type": [
-                        "null",
-                        "string"
-                    ]
-                },
-                "fileFormat": {
-                    "description": "The MIME type of the file (ie text/csv, application/excel, application/zip).\n\nMIAPPE V1.1 (DM-38) Data file description - Description of the format of the data file. May be a standard file format name, or a description of organization of the data in a tabular file.",
-                    "type": [
-                        "null",
-                        "string"
-                    ]
-                },
-                "name": {
-                    "description": "The name of the external data link\n\nMIAPPE V1.1 (DM-38) Data file description - Description of the format of the data file. May be a standard file format name, or a description of organization of the data in a tabular file.",
-                    "type": [
-                        "null",
-                        "string"
-                    ]
-                },
-                "provenance": {
-                    "description": "The description of the origin or ownership of this linked data. Could be a formal reference to software, method, or workflow.",
-                    "type": [
-                        "null",
-                        "string"
-                    ]
-                },
-                "scientificType": {
-                    "description": "The general type of data. For example- Genotyping, Phenotyping raw data, Phenotyping reduced data, Environmental, etc",
-                    "type": [
-                        "null",
-                        "string"
-                    ]
-                },
-                "url": {
-                    "description": "URL describing the location of this data file to view or download\n\nMIAPPE V1.1 (DM-37) Data file link - Link to the data file (or digital object) in a public database or in a persistent institutional repository; or identifier of the data file when submitted together with the MIAPPE submission.",
-                    "format": "uri",
-                    "type": [
-                        "null",
-                        "string"
-                    ]
-                },
-                "version": {
-                    "description": "The version number for this data \n\nMIAPPE V1.1 (DM-39) Data file version - The version of the dataset (the actual data).",
-                    "type": [
-                        "null",
-                        "string"
-                    ]
-                },
-                "study": {
-                    "$ref": "Study.json#/$defs/Study",
-                    "description": "The ID which uniquely identifies a `Study` within the given database server",
-                    "referencedAttribute": "dataLinks",
-                    "relationshipType": "many-to-one"
-                }
-            },
-            "required": [
-                "dataLinkDbId"
-            ],
-            "title": "DataLink",
-            "type": "object"
-        },
-        "EnvironmentParameter": {
-            "properties": {
-                "environmentParameterDbId": {
-                    "description": "The ID which uniquely identifies this parameter",
-                    "type": "string"
-                },
-                "description": {
+                "environmentParametersDbId": {
                     "description": "Human-readable value of the environment parameter (defined above) constant within the experiment",
                     "type": "string"
                 },
@@ -463,26 +371,25 @@
                     ]
                 },
                 "study": {
-                    "$ref": "Study.json#/$defs/Study",
-                    "description": "The ID which uniquely identifies a `Study` within the given database server",
-                    "referencedAttribute": "environmentParameters",
-                    "relationshipType": "many-to-one"
+                    "description": "Environment parameters associated with a study",
+                    "$ref": "../BrAPI-Core/Study.json#/$defs/Study",
+                    "relationshipType": "many-to-one",
+                    "referencedAttribute": "environmentParameters"
                 }
             },
             "required": [
-                "environmentParameterDbId",
+                "environmentParametersDbId",
                 "parameterName",
                 "description"
             ],
-            "title": "environmentParameters",
-            "type": "object"
+            "title": "EnvironmentParameters",
+            "type": "object",
+            "brapi-metadata": {
+                "primaryModel": false
+            }
         },
         "ExperimentalDesign": {
             "properties": {
-                "experimentalDesignDbId": {
-                    "description": "The ID which uniquely identifies this experimental design",
-                    "type": "string"
-                },
                 "PUI": {
                     "description": "MIAPPE V1.1 (DM-23) Type of experimental design - Type of experimental  design of the study, in the form of an accession number from the Crop Ontology.",
                     "type": [
@@ -498,55 +405,51 @@
                     ]
                 },
                 "study": {
-                    "description": "",
-                    "referencedAttribute": "experimentalDesign",
-                    "relationshipType": "one-to-one",
-                    "$ref": "Study.json#/$defs/Study"
-                    
+                    "description": "Experimental design associated with a study",
+                    "$ref": "../BrAPI-Core/Study.json#/$defs/Study",
+                    "relationshipType": "many-to-one",
+                    "referencedAttribute": "experimentalDesign"
                 }
             },
-            "required": [
-                "experimentalDesignDbId"
-            ],
-            "title": "experimentalDesign"
+            "title": "ExperimentalDesign",
+            "type": "object",
+            "brapi-metadata": {
+                "primaryModel": false
+            }
         },
         "GrowthFacility": {
             "properties": {
-                "growthFacilityDbId": {
-                    "description": "The ID which uniquely identifies this growth facility",
-                    "type": "string"
-                },
                 "PUI": {
-                    "description": "MIAPPE V1.1 (DM-23) Type of experimental design - Type of experimental  design of the study, in the form of an accession number from the Crop Ontology.",
+                    "description": "MIAPPE V1.1 (DM-27) Type of growth facility - Type of growth facility in which the study was carried out, in the form of an accession number from the Crop Ontology.",
                     "type": [
                         "null",
                         "string"
                     ]
                 },
                 "description": {
-                    "description": "MIAPPE V1.1 (DM-22) Description of the experimental design - Short description of the experimental design, possibly including statistical design. In specific cases, e.g. legacy datasets or data computed from several studies, the experimental design can be \"unknown\"/\"NA\", \"aggregated/reduced data\", or simply 'none'.",
+                    "description": "MIAPPE V1.1 (DM-26) Description of growth facility - Short description of the facility in which the study was carried out.",
                     "type": [
                         "null",
                         "string"
                     ]
                 },
                 "study": {
-                    "description": "",
-                    "referencedAttribute": "growthFacility",
-                    "relationshipType": "one-to-one",
-                    "$ref": "Study.json#/$defs/Study"
-                    
+                    "description": "Growth facility associated with a study",
+                    "$ref": "../BrAPI-Core/Study.json#/$defs/Study",
+                    "relationshipType": "many-to-one",
+                    "referencedAttribute": "growthFacility"
                 }
             },
-            "required": [
-                "growthFacilityDbId"
-            ],
-            "title": "growthFacility"
+            "title": "GrowthFacility",
+            "type": "object",
+            "brapi-metadata": {
+                "primaryModel": false
+            }
         },
         "LastUpdate": {
             "properties": {
                 "lastUpdateDbId": {
-                    "description": "The ID which uniquely identifies this update",
+                    "description": "The date and time when this study was last modified",
                     "type": "string"
                 },
                 "timestamp": {
@@ -563,17 +466,20 @@
                     ]
                 },
                 "study": {
-                    "description": "",
-                    "referencedAttribute": "lastUpdate",
-                    "relationshipType": "one-to-one",
-                    "$ref": "Study.json#/$defs/Study"
-                    
+                    "description": "Last update associated with a study",
+                    "$ref": "../BrAPI-Core/Study.json#/$defs/Study",
+                    "relationshipType": "many-to-one",
+                    "referencedAttribute": "lastUpdate"
                 }
             },
             "required": [
                 "lastUpdateDbId"
             ],
-            "title": "LastUpdate"
+            "title": "LastUpdate",
+            "type": "object",
+            "brapi-metadata": {
+                "primaryModel": false
+            }
         }
     },
     "$id": "https://brapi.org/Specification/BrAPI-Schema/BrAPI-Core/Study.json",

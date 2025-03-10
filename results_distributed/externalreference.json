@@ -2,11 +2,15 @@
     "model": "externalreference",
     "storageType": "sql",
     "attributes": {
-        "externalReferenceDbId": {
-            "type": "[ String ]",
-            "description": "the unique identifier for a reference"
-        },
-        "externalID": {
+        "study_ID": "String",
+        "program_ID": "String",
+        "list_ID": "String",
+        "location_ID": "String",
+        "person_ID": "String",
+        "trial_ID": "String",
+        "variable_ID": "String",
+        "attribute_ID": "String",
+        "referenceDbId": {
             "type": "String",
             "description": "The external reference ID. Could be a simple string or a URI."
         },
@@ -14,114 +18,48 @@
             "type": "String",
             "description": "An identifier for the source system or database of this reference"
         },
-        "callset_ID": "String",
-        "cross_ID": "String",
-        "crossingProject_ID": "String",
-        "germplasm_ID": "String",
-        "germplasmAttribute_ID": "String",
-        "germplasmAttributeValue_ID": "String",
+        "observation_ID": "String",
         "image_ID": "String",
         "method_ID": "String",
-        "list_ID": "String",
-        "location_ID": "String",
-        "observation_ID": "String",
-        "observationUnit_ID": "String",
         "observationVariable_ID": "String",
-        "plate_ID": "String",
-        "person_ID": "String",
-        "pedigreeNode_ID": "String",
-        "plannedCross_ID": "String",
-        "program_ID": "String",
-        "reference_ID": "String",
-        "referenceset_ID": "String",
-        "sample_ID": "String",
-        "scale_ID": "String",
-        "seedLot_ID": "String",
-        "seedLotTransaction_ID": "String",
-        "study_ID": "String",
         "trait_ID": "String",
-        "trial_ID": "String",
+        "scale_ID": "String",
+        "observationUnit_ID": "String",
+        "germplasm_ID": "String",
+        "crossingProject_ID": "String",
+        "pedigreeNode_ID": "String",
+        "seedLot_ID": "String",
+        "plannedCross_ID": "String",
+        "germplasmAttribute_ID": "String",
+        "cross_ID": "String",
+        "seedLotTransaction_ID": "String",
+        "germplasmAttributeValue_ID": "String",
+        "variantSet_ID": "String",
+        "referenceSet_ID": "String",
+        "callSet_ID": "String",
         "variant_ID": "String",
-        "variantset_ID": "String"
+        "plate_ID": "String",
+        "sample_ID": "String",
+        "reference_ID": "String"
     },
     "associations": {
-        "callset": {
+        "study": {
             "type": "many_to_one",
             "implementation": "foreignkeys",
             "reverseAssociation": "externalReferences",
-            "target": "callset",
+            "target": "study",
             "targetKey": "externalReferences_IDs",
-            "sourceKey": "callset_ID",
+            "sourceKey": "study_ID",
             "keysIn": "externalreference",
-            "targetStorageType": "sql"
+            "targetStorageType": "cassandra"
         },
-        "cross": {
+        "program": {
             "type": "many_to_one",
             "implementation": "foreignkeys",
             "reverseAssociation": "externalReferences",
-            "target": "cross",
+            "target": "program",
             "targetKey": "externalReferences_IDs",
-            "sourceKey": "cross_ID",
-            "keysIn": "externalreference",
-            "targetStorageType": "sql"
-        },
-        "crossingProject": {
-            "type": "many_to_one",
-            "implementation": "foreignkeys",
-            "reverseAssociation": "externalReferences",
-            "target": "crossingproject",
-            "targetKey": "externalReferences_IDs",
-            "sourceKey": "crossingProject_ID",
-            "keysIn": "externalreference",
-            "targetStorageType": "sql"
-        },
-        "germplasm": {
-            "type": "many_to_one",
-            "implementation": "foreignkeys",
-            "reverseAssociation": "externalReferences",
-            "target": "germplasm",
-            "targetKey": "externalReferences_IDs",
-            "sourceKey": "germplasm_ID",
-            "keysIn": "externalreference",
-            "targetStorageType": "sql"
-        },
-        "germplasmAttribute": {
-            "type": "many_to_one",
-            "implementation": "foreignkeys",
-            "reverseAssociation": "externalReferences",
-            "target": "germplasmattribute",
-            "targetKey": "externalReferences_IDs",
-            "sourceKey": "germplasmAttribute_ID",
-            "keysIn": "externalreference",
-            "targetStorageType": "sql"
-        },
-        "germplasmAttributeValue": {
-            "type": "many_to_one",
-            "implementation": "foreignkeys",
-            "reverseAssociation": "externalReferences",
-            "target": "germplasmattributevalue",
-            "targetKey": "externalReferences_IDs",
-            "sourceKey": "germplasmAttributeValue_ID",
-            "keysIn": "externalreference",
-            "targetStorageType": "sql"
-        },
-        "image": {
-            "type": "many_to_one",
-            "implementation": "foreignkeys",
-            "reverseAssociation": "externalReferences",
-            "target": "image",
-            "targetKey": "externalReferences_IDs",
-            "sourceKey": "image_ID",
-            "keysIn": "externalreference",
-            "targetStorageType": "sql"
-        },
-        "method": {
-            "type": "many_to_one",
-            "implementation": "foreignkeys",
-            "reverseAssociation": "externalReferences",
-            "target": "method",
-            "targetKey": "externalReferences_IDs",
-            "sourceKey": "method_ID",
+            "sourceKey": "program_ID",
             "keysIn": "externalreference",
             "targetStorageType": "sql"
         },
@@ -145,6 +83,46 @@
             "keysIn": "externalreference",
             "targetStorageType": "sql"
         },
+        "person": {
+            "type": "many_to_one",
+            "implementation": "foreignkeys",
+            "reverseAssociation": "externalReferences",
+            "target": "person",
+            "targetKey": "externalReferences_IDs",
+            "sourceKey": "person_ID",
+            "keysIn": "externalreference",
+            "targetStorageType": "sql"
+        },
+        "trial": {
+            "type": "many_to_one",
+            "implementation": "foreignkeys",
+            "reverseAssociation": "externalReferences",
+            "target": "trial",
+            "targetKey": "externalReferences_IDs",
+            "sourceKey": "trial_ID",
+            "keysIn": "externalreference",
+            "targetStorageType": "mongodb"
+        },
+        "variable": {
+            "type": "many_to_one",
+            "implementation": "foreignkeys",
+            "reverseAssociation": "externalReferences",
+            "target": "variable",
+            "targetKey": "externalReferences_IDs",
+            "sourceKey": "variable_ID",
+            "keysIn": "externalreference",
+            "targetStorageType": "sql"
+        },
+        "attribute": {
+            "type": "many_to_one",
+            "implementation": "foreignkeys",
+            "reverseAssociation": "externalReferences",
+            "target": "attribute",
+            "targetKey": "externalReferences_IDs",
+            "sourceKey": "attribute_ID",
+            "keysIn": "externalreference",
+            "targetStorageType": "sql"
+        },
         "observation": {
             "type": "many_to_one",
             "implementation": "foreignkeys",
@@ -155,13 +133,23 @@
             "keysIn": "externalreference",
             "targetStorageType": "sql"
         },
-        "observationUnit": {
+        "image": {
             "type": "many_to_one",
             "implementation": "foreignkeys",
             "reverseAssociation": "externalReferences",
-            "target": "observationunit",
+            "target": "image",
             "targetKey": "externalReferences_IDs",
-            "sourceKey": "observationUnit_ID",
+            "sourceKey": "image_ID",
+            "keysIn": "externalreference",
+            "targetStorageType": "sql"
+        },
+        "method": {
+            "type": "many_to_one",
+            "implementation": "foreignkeys",
+            "reverseAssociation": "externalReferences",
+            "target": "method",
+            "targetKey": "externalReferences_IDs",
+            "sourceKey": "method_ID",
             "keysIn": "externalreference",
             "targetStorageType": "sql"
         },
@@ -175,23 +163,53 @@
             "keysIn": "externalreference",
             "targetStorageType": "sql"
         },
-        "plate": {
+        "trait": {
             "type": "many_to_one",
             "implementation": "foreignkeys",
             "reverseAssociation": "externalReferences",
-            "target": "plate",
+            "target": "trait",
             "targetKey": "externalReferences_IDs",
-            "sourceKey": "plate_ID",
+            "sourceKey": "trait_ID",
+            "keysIn": "externalreference",
+            "targetStorageType": "mongodb"
+        },
+        "scale": {
+            "type": "many_to_one",
+            "implementation": "foreignkeys",
+            "reverseAssociation": "externalReferences",
+            "target": "scale",
+            "targetKey": "externalReferences_IDs",
+            "sourceKey": "scale_ID",
             "keysIn": "externalreference",
             "targetStorageType": "sql"
         },
-        "person": {
+        "observationUnit": {
             "type": "many_to_one",
             "implementation": "foreignkeys",
             "reverseAssociation": "externalReferences",
-            "target": "person",
+            "target": "observationunit",
             "targetKey": "externalReferences_IDs",
-            "sourceKey": "person_ID",
+            "sourceKey": "observationUnit_ID",
+            "keysIn": "externalreference",
+            "targetStorageType": "sql"
+        },
+        "germplasm": {
+            "type": "many_to_one",
+            "implementation": "foreignkeys",
+            "reverseAssociation": "externalReferences",
+            "target": "germplasm",
+            "targetKey": "externalReferences_IDs",
+            "sourceKey": "germplasm_ID",
+            "keysIn": "externalreference",
+            "targetStorageType": "sql"
+        },
+        "crossingProject": {
+            "type": "many_to_one",
+            "implementation": "foreignkeys",
+            "reverseAssociation": "externalReferences",
+            "target": "crossingproject",
+            "targetKey": "externalReferences_IDs",
+            "sourceKey": "crossingProject_ID",
             "keysIn": "externalreference",
             "targetStorageType": "sql"
         },
@@ -205,6 +223,16 @@
             "keysIn": "externalreference",
             "targetStorageType": "sql"
         },
+        "seedLot": {
+            "type": "many_to_one",
+            "implementation": "foreignkeys",
+            "reverseAssociation": "externalReferences",
+            "target": "seedlot",
+            "targetKey": "externalReferences_IDs",
+            "sourceKey": "seedLot_ID",
+            "keysIn": "externalreference",
+            "targetStorageType": "sql"
+        },
         "plannedCross": {
             "type": "many_to_one",
             "implementation": "foreignkeys",
@@ -215,63 +243,23 @@
             "keysIn": "externalreference",
             "targetStorageType": "sql"
         },
-        "program": {
+        "germplasmAttribute": {
             "type": "many_to_one",
             "implementation": "foreignkeys",
             "reverseAssociation": "externalReferences",
-            "target": "program",
+            "target": "germplasmattribute",
             "targetKey": "externalReferences_IDs",
-            "sourceKey": "program_ID",
+            "sourceKey": "germplasmAttribute_ID",
             "keysIn": "externalreference",
             "targetStorageType": "sql"
         },
-        "reference": {
+        "cross": {
             "type": "many_to_one",
             "implementation": "foreignkeys",
             "reverseAssociation": "externalReferences",
-            "target": "reference",
+            "target": "cross",
             "targetKey": "externalReferences_IDs",
-            "sourceKey": "reference_ID",
-            "keysIn": "externalreference",
-            "targetStorageType": "sql"
-        },
-        "referenceset": {
-            "type": "many_to_one",
-            "implementation": "foreignkeys",
-            "reverseAssociation": "externalReferences",
-            "target": "referenceset",
-            "targetKey": "externalReferences_IDs",
-            "sourceKey": "referenceset_ID",
-            "keysIn": "externalreference",
-            "targetStorageType": "sql"
-        },
-        "sample": {
-            "type": "many_to_one",
-            "implementation": "foreignkeys",
-            "reverseAssociation": "externalReferences",
-            "target": "sample",
-            "targetKey": "externalReferences_IDs",
-            "sourceKey": "sample_ID",
-            "keysIn": "externalreference",
-            "targetStorageType": "sql"
-        },
-        "scale": {
-            "type": "many_to_one",
-            "implementation": "foreignkeys",
-            "reverseAssociation": "externalReferences",
-            "target": "scale",
-            "targetKey": "externalReferences_IDs",
-            "sourceKey": "scale_ID",
-            "keysIn": "externalreference",
-            "targetStorageType": "sql"
-        },
-        "seedLot": {
-            "type": "many_to_one",
-            "implementation": "foreignkeys",
-            "reverseAssociation": "externalReferences",
-            "target": "seedlot",
-            "targetKey": "externalReferences_IDs",
-            "sourceKey": "seedLot_ID",
+            "sourceKey": "cross_ID",
             "keysIn": "externalreference",
             "targetStorageType": "sql"
         },
@@ -285,35 +273,45 @@
             "keysIn": "externalreference",
             "targetStorageType": "sql"
         },
-        "study": {
+        "germplasmAttributeValue": {
             "type": "many_to_one",
             "implementation": "foreignkeys",
             "reverseAssociation": "externalReferences",
-            "target": "study",
+            "target": "germplasmattributevalue",
             "targetKey": "externalReferences_IDs",
-            "sourceKey": "study_ID",
+            "sourceKey": "germplasmAttributeValue_ID",
             "keysIn": "externalreference",
-            "targetStorageType": "cassandra"
+            "targetStorageType": "sql"
         },
-        "trait": {
+        "variantSet": {
             "type": "many_to_one",
             "implementation": "foreignkeys",
             "reverseAssociation": "externalReferences",
-            "target": "trait",
+            "target": "variantset",
             "targetKey": "externalReferences_IDs",
-            "sourceKey": "trait_ID",
+            "sourceKey": "variantSet_ID",
             "keysIn": "externalreference",
-            "targetStorageType": "mongodb"
+            "targetStorageType": "sql"
         },
-        "trial": {
+        "referenceSet": {
             "type": "many_to_one",
             "implementation": "foreignkeys",
             "reverseAssociation": "externalReferences",
-            "target": "trial",
+            "target": "referenceset",
             "targetKey": "externalReferences_IDs",
-            "sourceKey": "trial_ID",
+            "sourceKey": "referenceSet_ID",
             "keysIn": "externalreference",
-            "targetStorageType": "mongodb"
+            "targetStorageType": "sql"
+        },
+        "callSet": {
+            "type": "many_to_one",
+            "implementation": "foreignkeys",
+            "reverseAssociation": "externalReferences",
+            "target": "callset",
+            "targetKey": "externalReferences_IDs",
+            "sourceKey": "callSet_ID",
+            "keysIn": "externalreference",
+            "targetStorageType": "sql"
         },
         "variant": {
             "type": "many_to_one",
@@ -325,16 +323,36 @@
             "keysIn": "externalreference",
             "targetStorageType": "sql"
         },
-        "variantset": {
+        "plate": {
             "type": "many_to_one",
             "implementation": "foreignkeys",
             "reverseAssociation": "externalReferences",
-            "target": "variantset",
+            "target": "plate",
             "targetKey": "externalReferences_IDs",
-            "sourceKey": "variantset_ID",
+            "sourceKey": "plate_ID",
+            "keysIn": "externalreference",
+            "targetStorageType": "sql"
+        },
+        "sample": {
+            "type": "many_to_one",
+            "implementation": "foreignkeys",
+            "reverseAssociation": "externalReferences",
+            "target": "sample",
+            "targetKey": "externalReferences_IDs",
+            "sourceKey": "sample_ID",
+            "keysIn": "externalreference",
+            "targetStorageType": "sql"
+        },
+        "reference": {
+            "type": "many_to_one",
+            "implementation": "foreignkeys",
+            "reverseAssociation": "externalReferences",
+            "target": "reference",
+            "targetKey": "externalReferences_IDs",
+            "sourceKey": "reference_ID",
             "keysIn": "externalreference",
             "targetStorageType": "sql"
         }
     },
-    "internalId": "externalReferenceDbId"
+    "internalId": "referenceDbId"
 }

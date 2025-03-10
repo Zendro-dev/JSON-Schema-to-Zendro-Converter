@@ -2,12 +2,8 @@
     "model": "datamatrix",
     "storageType": "sql",
     "attributes": {
-        "dataMatrixDbId": {
-            "type": "[ String ]",
-            "description": "The ID which uniquely identifies this data matrix"
-        },
         "dataMatrix": {
-            "type": "[ String ]",
+            "type": "String",
             "description": "The two dimensional array of data, providing the allele matrix or an additional layer of metadata associated with each genotype value. Each matrix should be the same size and orientation, aligned with the \"callSetDbIds\" as columns and the \"variantDbIds\" as rows."
         },
         "dataMatrixAbbreviation": {
@@ -22,16 +18,20 @@
             "type": "String",
             "description": "The type of field represented in this data matrix. This is intended to help parse the data out of JSON."
         },
-        "alleleMatrices_ID": "String"
+        "dataMatrixDbId": {
+            "type": "String",
+            "description": ""
+        },
+        "alleleMatrix_ID": "String"
     },
     "associations": {
-        "alleleMatrices": {
+        "alleleMatrix": {
             "type": "many_to_one",
             "implementation": "foreignkeys",
             "reverseAssociation": "dataMatrices",
             "target": "allelematrix",
             "targetKey": "dataMatrices_IDs",
-            "sourceKey": "alleleMatrices_ID",
+            "sourceKey": "alleleMatrix_ID",
             "keysIn": "datamatrix",
             "targetStorageType": "sql"
         }

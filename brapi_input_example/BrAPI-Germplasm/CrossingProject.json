@@ -1,10 +1,11 @@
 {
     "$defs": {
         "CrossingProject": {
-            "properties": { 
-                "crossingProjectDbId": {
-                    "description": "The unique identifier for a crossing project",
-                    "type": "string"
+            "properties": {
+                "additionalInfo": {
+                    "description": "A free space containing any additional information related to a particular object. A data source may provide any JSON object, unrestricted by the BrAPI specification.",
+                    "$ref": "../BrAPI-Common/AdditionalInfo.json#/$defs/AdditionalInfo",
+					"relationshipType": "one-to-one"
                 },
                 "commonCropName": {
                     "description": "the common name of a crop (for multi-crop systems)",
@@ -12,6 +13,10 @@
                         "null",
                         "string"
                     ]
+                },
+                "crossingProjectDbId": {
+                    "description": "The unique identifier for a crossing project",
+                    "type": "string"
                 },
                 "crossingProjectDescription": {
                     "description": "the description for a crossing project",
@@ -24,8 +29,31 @@
                     "description": "The human readable name for a crossing project",
                     "type": "string"
                 },
+                "externalReferences": {
+                    "description": "An array of external reference ids. These are references to this piece of data in an external system. Could be a simple string or a URI.",
+                    "relationshipType": "one-to-many",
+                    "items": {
+                        "$ref": "../BrAPI-Common/ExternalReference.json#/$defs/ExternalReference",
+                        "description": "ExternalReferences"
+                    },
+                    "title": "ExternalReferences",
+                    "type": [
+                        "null",
+                        "array"
+                    ]
+                },
+                "potentialParents": {
+                    "description": "A list of all the potential parents in the crossing block, available in the crossing project\n<br/> If the parameter 'includePotentialParents' is false, the array 'potentialParents' should be empty, null, or excluded from the response object.",
+                    "items": {
+                        "$ref": "CrossParent.json#/$defs/CrossParent"
+                    },
+                    "type": [
+                        "null",
+                        "array"
+                    ]
+                },
                 "program": {
-                    "$ref": "Program.json#/$defs/Program",
+                    "$ref": "../BrAPI-Core/Program.json#/$defs/Program",
                     "description": "the unique identifier for a program",
                     "referencedAttribute": "crossingProjects",
                     "relationshipType": "many-to-one"
@@ -71,48 +99,6 @@
                         "null",
                         "array"
                     ]
-                },
-                "additionalInfo": {
-                    "title": "additionalInfo",
-                    "description": "A free space containing any additional information related to a particular object. A data source may provide any JSON object, unrestricted by the BrAPI specification.",
-                    "referencedAttribute": "crossingProject",
-                    "relationshipType": "one-to-many",
-                    "items": {
-                        "$ref": "AdditionalInfo.json#/$defs/AdditionalInfo",
-                        "description": "AdditionalInfo"
-                    },
-                    "type": [
-                        "null",
-                        "array"
-                    ]
-                },
-                "externalReferences": {
-                    "title": "externalReferences",
-                    "description": "An array of external reference ids. These are references to this piece of data in an external system. Could be a simple string or a URI.",
-                    "referencedAttribute": "crossingProject",
-                    "relationshipType": "one-to-many",
-                    "items": {
-                        "$ref": "ExternalReference.json#/ExternalReference",
-                        "description": "ExternalReference"
-                    },
-                    "type": [
-                        "null",
-                        "array"
-                    ]
-                },
-                "potentialParents": {
-                    "title": "potentialParents",
-                    "description": "A list of all the potential parents in the crossing block, available in the crossing project\n<br/> If the parameter 'includePotentialParents' is false, the array 'potentialParents' should be empty, null, or excluded from the response object.",
-                    "referencedAttribute": "crossingProjects",
-                    "relationshipType": "many-to-many",
-                    "items": {
-                        "$ref": "Parent.json#/$defs/Parent",
-                        "description": "Potential parents for a crossing project"
-                    },
-                    "type": [
-                        "null",
-                        "array"
-                    ]
                 }
             },
             "required": [
@@ -120,7 +106,10 @@
                 "crossingProjectName"
             ],
             "title": "CrossingProject",
-            "type": "object"
+            "type": "object",
+            "brapi-metadata": {
+                "primaryModel": true
+            }
         }
     },
     "$id": "https://brapi.org/Specification/BrAPI-Schema/BrAPI-Germplasm/CrossingProject.json",

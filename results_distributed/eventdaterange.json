@@ -2,31 +2,31 @@
     "model": "eventdaterange",
     "storageType": "sql",
     "attributes": {
-        "eventDateRangeDbId": {
-            "type": "[ String ]",
-            "description": "the unique identifier of a event date range"
-        },
         "discreteDates": {
-            "type": "[ String ]",
+            "type": "String",
             "description": "A list of dates when the event occurred\n<br/>MIAPPE V1.1 (DM-68) Event date - Date and time of the event."
         },
         "endDate": {
             "type": "String",
-            "description": "The end of a continous or regularly repetitive event\n<br/>MIAPPE V1.1 (DM-68) Event date - Date and time of the event."
+            "description": "The end of a continuous or regularly repetitive event\n<br/>MIAPPE V1.1 (DM-68) Event date - Date and time of the event."
         },
         "startDate": {
             "type": "String",
-            "description": "The begining of a continous or regularly repetitive event\n<br/>MIAPPE V1.1 (DM-68) Event date - Date and time of the event."
+            "description": "The beginning of a continuous or regularly repetitive event\n<br/>MIAPPE V1.1 (DM-68) Event date - Date and time of the event."
+        },
+        "eventDateRangeDbId": {
+            "type": "String",
+            "description": ""
         },
         "event_ID": "String"
     },
     "associations": {
         "event": {
-            "type": "one_to_one",
+            "type": "many_to_one",
             "implementation": "foreignkeys",
             "reverseAssociation": "eventDateRange",
             "target": "event",
-            "targetKey": "eventDateRange_ID",
+            "targetKey": "eventDateRange_IDs",
             "sourceKey": "event_ID",
             "keysIn": "eventdaterange",
             "targetStorageType": "sql"

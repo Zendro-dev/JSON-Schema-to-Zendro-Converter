@@ -3,15 +3,23 @@
     "storageType": "sql",
     "attributes": {
         "observationVariableDbId": {
-            "type": "[ String ]",
+            "type": "String",
             "description": "Variable unique identifier\n\nMIAPPE V1.1 (DM-83) Variable ID - Code used to identify the variable in the data file. We recommend using a variable definition from the Crop Ontology where possible. Otherwise, the Crop Ontology naming convention is recommended: <trait abbreviation>_<method abbreviation>_<scale abbreviation>). A variable ID must be unique within a given investigation."
+        },
+        "observationVariableName": {
+            "type": "String",
+            "description": "Variable name (usually a short name)\n\nMIAPPE V1.1 (DM-84) Variable name - Name of the variable."
+        },
+        "observationVariablePUI": {
+            "type": "String",
+            "description": "The Permanent Unique Identifier of a Observation Variable, usually in the form of a URI"
         },
         "commonCropName": {
             "type": "String",
             "description": "Crop name (examples: \"Maize\", \"Wheat\")"
         },
         "contextOfUse": {
-            "type": "[ String ]",
+            "type": "String",
             "description": "Indication of how trait is routinely used. (examples: [\"Trial evaluation\", \"Nursery evaluation\"])"
         },
         "defaultValue": {
@@ -34,14 +42,6 @@
             "type": "String",
             "description": "2 letter ISO 639-1 code for the language of submission of the variable."
         },
-        "observationVariableName": {
-            "type": "String",
-            "description": "Variable name (usually a short name)\n\nMIAPPE V1.1 (DM-84) Variable name - Name of the variable."
-        },
-        "observationVariablePUI": {
-            "type": "String",
-            "description": "The Permanent Unique Identifier of a Observation Variable, usually in the form of a URI"
-        },
         "scientist": {
             "type": "String",
             "description": "Name of scientist submitting the variable."
@@ -55,12 +55,16 @@
             "description": "Timestamp when the Variable was added (ISO 8601)"
         },
         "synonyms": {
-            "type": "[ String ]",
+            "type": "String",
             "description": "Other variable names"
+        },
+        "variableDbId": {
+            "type": "String",
+            "description": ""
         },
         "studies_IDs": "[ String ]",
         "observations_IDs": "[ String ]",
-        "additionalInfo_IDs": "[ String ]",
+        "additionalInfo_ID": "String",
         "externalReferences_IDs": "[ String ]",
         "method_ID": "String",
         "ontologyReference_ID": "String",
@@ -89,12 +93,12 @@
             "targetStorageType": "sql"
         },
         "additionalInfo": {
-            "type": "one_to_many",
+            "type": "one_to_one",
             "implementation": "foreignkeys",
             "reverseAssociation": "observationVariable",
             "target": "additionalinfo",
             "targetKey": "observationVariable_ID",
-            "sourceKey": "additionalInfo_IDs",
+            "sourceKey": "additionalInfo_ID",
             "keysIn": "observationvariable",
             "targetStorageType": "sql"
         },
@@ -109,11 +113,11 @@
             "targetStorageType": "sql"
         },
         "method": {
-            "type": "many_to_one",
+            "type": "one_to_one",
             "implementation": "foreignkeys",
-            "reverseAssociation": "observationVariables",
+            "reverseAssociation": "observationVariable",
             "target": "method",
-            "targetKey": "observationVariables_IDs",
+            "targetKey": "observationVariable_ID",
             "sourceKey": "method_ID",
             "keysIn": "observationvariable",
             "targetStorageType": "sql"
@@ -129,21 +133,21 @@
             "targetStorageType": "sql"
         },
         "scale": {
-            "type": "many_to_one",
+            "type": "one_to_one",
             "implementation": "foreignkeys",
             "reverseAssociation": "observationVariable",
             "target": "scale",
-            "targetKey": "observationVariable_IDs",
+            "targetKey": "observationVariable_ID",
             "sourceKey": "scale_ID",
             "keysIn": "observationvariable",
             "targetStorageType": "sql"
         },
         "trait": {
-            "type": "many_to_one",
+            "type": "one_to_one",
             "implementation": "foreignkeys",
-            "reverseAssociation": "observationVariables",
+            "reverseAssociation": "observationVariable",
             "target": "trait",
-            "targetKey": "observationVariables_IDs",
+            "targetKey": "observationVariable_ID",
             "sourceKey": "trait_ID",
             "keysIn": "observationvariable",
             "targetStorageType": "sql"

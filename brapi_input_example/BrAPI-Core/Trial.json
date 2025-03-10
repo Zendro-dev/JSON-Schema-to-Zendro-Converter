@@ -10,18 +10,9 @@
                     ]
                 },
                 "additionalInfo": {
-                    "title": "additionalInfo",
                     "description": "A free space containing any additional information related to a particular object. A data source may provide any JSON object, unrestricted by the BrAPI specification.",
-                    "referencedAttribute": "trial",
-                    "relationshipType": "one-to-many",
-                    "items": {
-                        "$ref": "AdditionalInfo.json#/$defs/AdditionalInfo",
-                        "description": "AdditionalInfo"
-                    },
-                    "type": [
-                        "null",
-                        "array"
-                    ]
+                    "$ref": "../BrAPI-Common/AdditionalInfo.json#/$defs/AdditionalInfo",
+					"relationshipType": "one-to-one"
                 },
                 "commonCropName": {
                     "description": "Common name for the crop associated with this trial",
@@ -31,13 +22,10 @@
                     ]
                 },
                 "contacts": {
-                    "title": "contacts",
-                    "description": "The ID which uniquely identifies this contact field",
-                    "referencedAttribute": "trial",
-                    "relationshipType": "one-to-many",
+                    "description": "List of contact entities associated with this trial",
+                    "relationshipType": "many-to-many",
                     "items": {
-                        "$ref": "Contact.json#/$defs/Contact",
-                        "description": "contacts"
+                        "$ref": "Contact.json#/$defs/Contact"
                     },
                     "type": [
                         "null",
@@ -45,14 +33,14 @@
                     ]
                 },
                 "datasetAuthorships": {
-                    "title": "datasetAuthorships",
-                    "description": "The ID which uniquely identifies this dataset authorship field",
-                    "referencedAttribute": "trial",
+                    "description": "License and citation information for the data in this trial",
                     "relationshipType": "one-to-many",
+                    "referencedAttribute": "trial",
                     "items": {
-                        "$ref": "Trial.json#/$defs/DatasetAuthorship",
-                        "description": "datasetAuthorships"
+                        "$ref": "../BrAPI-Core/Trial.json#/$defs/DatasetAuthorships",
+                        "description": "DatasetAuthorships"
                     },
+                    "title": "DatasetAuthorships",
                     "type": [
                         "null",
                         "array"
@@ -74,14 +62,13 @@
                     ]
                 },
                 "externalReferences": {
-                    "title": "externalReferences",
-                    "description": "The ID which uniquely identifies this external reference field",
-                    "referencedAttribute": "trial",
+                    "description": "An array of external reference ids. These are references to this piece of data in an external system. Could be a simple string or a URI.",
                     "relationshipType": "one-to-many",
                     "items": {
-                        "$ref": "ExternalReference.json#/$defs/ExternalReference",
-                        "description": "externalReferences"
+                        "$ref": "../BrAPI-Common/ExternalReference.json#/$defs/ExternalReference",
+                        "description": "ExternalReferences"
                     },
+                    "title": "ExternalReferences",
                     "type": [
                         "null",
                         "array"
@@ -95,7 +82,7 @@
                 },
                 "studies": {
                     "title": "Studies",
-                    "description": "The ID which uniquely identifies this study field",
+                    "description": "",
                     "referencedAttribute": "trial",
                     "relationshipType": "one-to-many",
                     "items": {
@@ -108,14 +95,14 @@
                     ]
                 },
                 "publications": {
-                    "title": "publications",
-                    "description": "The ID which uniquely identifies this publication field",
-                    "referencedAttribute": "trial",
+                    "description": "MIAPPE V1.1 (DM-9) Associated publication - An identifier for a literature publication where the investigation is described. Use of DOIs is recommended.",
                     "relationshipType": "one-to-many",
+                    "referencedAttribute": "trial",
                     "items": {
-                        "$ref": "Trial.json#/$defs/Publication",
-                        "description": "publications"
+                        "$ref": "../BrAPI-Core/Trial.json#/$defs/Publication",
+                        "description": "Publications"
                     },
+                    "title": "Publications",
                     "type": [
                         "null",
                         "array"
@@ -152,11 +139,11 @@
                 },
                 "plates": {
                     "title": "plates",
-                    "description": "The ID which uniquely identifies this plate field",
+                    "description": "plates",
                     "referencedAttribute": "trial",
                     "relationshipType": "one-to-many",
                     "items": {
-                        "$ref": "Plate.json#/$defs/Plate",
+                        "$ref": "../BrAPI-Genotyping/Plate.json#/$defs/Plate",
                         "description": "Plate"
                     },
                     "type": [
@@ -166,11 +153,11 @@
                 },
                 "samples": {
                     "title": "samples",
-                    "description": "The ID which uniquely identifies this sample field",
+                    "description": "samples",
                     "referencedAttribute": "trial",
                     "relationshipType": "one-to-many",
                     "items": {
-                        "$ref": "Sample.json#/$defs/Sample",
+                        "$ref": "../BrAPI-Genotyping/Sample.json#/$defs/Sample",
                         "description": "Sample"
                     },
                     "type": [
@@ -180,11 +167,11 @@
                 },
                 "observationUnits": {
                     "title": "observationUnits",
-                    "description": "The ID which uniquely identifies this observation unit field",
+                    "description": "observationUnits",
                     "referencedAttribute": "trial",
                     "relationshipType": "one-to-many",
                     "items": {
-                        "$ref": "ObservationUnit.json#/$defs/ObservationUnit",
+                        "$ref": "../BrAPI-Phenotyping/ObservationUnit.json#/$defs/ObservationUnit",
                         "description": "ObservationUnit"
                     },
                     "type": [
@@ -198,11 +185,14 @@
                 "trialDbId"
             ],
             "title": "Trial",
-            "type": "object"
+            "type": "object",
+            "brapi-metadata": {
+                "primaryModel": true
+            }
         },
-        "DatasetAuthorship": {
+        "DatasetAuthorships": {
             "properties": {
-                "datasetAuthorshipDbId": {
+                "datasetPUI": {
                     "description": "The DOI or other permanent unique identifier for this published dataset",
                     "type": [
                         "null",
@@ -231,21 +221,21 @@
                     ]
                 },
                 "trial": {
-                    "$ref": "Trial.json#/$defs/Trial",
-                    "description": "The unique identifier for a Trial.",
-                    "referencedAttribute": "datasetAuthorships",
-                    "relationshipType": "many-to-one"
+                    "description": "Dataset authorships associated with a trial",
+                    "$ref": "../BrAPI-Core/Trial.json#/$defs/Trial",
+                    "relationshipType": "many-to-one",
+                    "referencedAttribute": "datasetAuthorships"
                 }
             },
-            "required": [
-                "datasetAuthorshipDbId"
-            ],
-            "title": "Authorships",
-            "type": "object"
+            "title": "DatasetAuthorships",
+            "type": "object",
+            "brapi-metadata": {
+                "primaryModel": false
+            }
         },
         "Publication": {
             "properties": {
-                "publicationDbId": {
+                "publicationPUI": {
                     "type": [
                         "null",
                         "string"
@@ -258,17 +248,17 @@
                     ]
                 },
                 "trial": {
-                    "$ref": "Trial.json#/$defs/Trial",
-                    "description": "The unique identifier for a Trial.",
-                    "referencedAttribute": "publications",
-                    "relationshipType": "many-to-one"
+                    "description": "Publications associated with a trial",
+                    "$ref": "../BrAPI-Core/Trial.json#/$defs/Trial",
+                    "relationshipType": "many-to-one",
+                    "referencedAttribute": "publications"
                 }
             },
-            "required": [
-                "publicationDbId"
-            ],
-            "title": "Publications",
-            "type": "object"
+            "title": "Publication",
+            "type": "object",
+            "brapi-metadata": {
+                "primaryModel": false
+            }
         }
     },
     "$id": "https://brapi.org/Specification/BrAPI-Schema/BrAPI-Core/Trial.json",

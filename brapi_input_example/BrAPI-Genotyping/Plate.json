@@ -3,28 +3,18 @@
         "Plate": {
             "properties": {
                 "additionalInfo": {
-                    "title": "additionalInfo",
                     "description": "A free space containing any additional information related to a particular object. A data source may provide any JSON object, unrestricted by the BrAPI specification.",
-                    "referencedAttribute": "plate",
-                    "relationshipType": "one-to-many",
-                    "items": {
-                        "$ref": "AdditionalInfo.json#/$defs/AdditionalInfo",
-                        "description": "AdditionalInfo"
-                    },
-                    "type": [
-                        "null",
-                        "array"
-                    ]
+                    "$ref": "../BrAPI-Common/AdditionalInfo.json#/$defs/AdditionalInfo",
+					"relationshipType": "one-to-one"
                 },
                 "externalReferences": {
-                    "title": "externalReferences",
-                    "description": "The ID which uniquely identifies this external reference field",
-                    "referencedAttribute": "plate",
+                    "description": "An array of external reference ids. These are references to this piece of data in an external system. Could be a simple string or a URI.",
                     "relationshipType": "one-to-many",
                     "items": {
-                        "$ref": "ExternalReference.json#/$defs/ExternalReference",
-                        "description": "externalReferences"
+                        "$ref": "../BrAPI-Common/ExternalReference.json#/$defs/ExternalReference",
+                        "description": "ExternalReferences"
                     },
+                    "title": "ExternalReferences",
                     "type": [
                         "null",
                         "array"
@@ -36,6 +26,10 @@
                         "null",
                         "string"
                     ]
+                },
+                "plateDbId": {
+                    "description": "The ID which uniquely identifies a `Plate`",
+                    "type": "string"
                 },
                 "plateFormat": {
                     "description": "Enum for plate formats, usually \"PLATE_96\" for a 96 well plate or \"TUBES\" for plateless format",
@@ -49,16 +43,12 @@
                         "string"
                     ]
                 },
-                "plateDbId": {
-                    "description": "The ID which uniquely identifies a plate within the given database server\n\nMIAPPE V1.1 (DM-11) Study unique ID - Unique identifier comprising the name or identifier for the institution/database hosting the submission of the study data, and the identifier of the study in that institution.",
-                    "type": "string"
-                },
                 "plateName": {
                     "description": "A human readable name for a `Plate`",
                     "type": "string"
                 },
                 "program": {
-                    "$ref": "Program.json#/$defs/Program",
+                    "$ref": "../BrAPI-Core/Program.json#/$defs/Program",
                     "description": "The ID which uniquely identifies a `Program` within the given database server",
                     "referencedAttribute": "plates",
                     "relationshipType": "many-to-one"
@@ -78,20 +68,20 @@
                     ]
                 },
                 "study": {
-                    "$ref": "Study.json#/$defs/Study",
+                    "$ref": "../BrAPI-Core/Study.json#/$defs/Study",
                     "description": "The ID which uniquely identifies a `Study` within the given database server",
                     "referencedAttribute": "plates",
                     "relationshipType": "many-to-one"
                 },
                 "trial": {
-                    "$ref": "Trial.json#/$defs/Trial",
+                    "$ref": "../BrAPI-Core/Trial.json#/$defs/Trial",
                     "description": "The ID which uniquely identifies a `Trial` within the given database server",
                     "referencedAttribute": "plates",
                     "relationshipType": "many-to-one"
                 },
                 "samples": {
                     "title": "samples",
-                    "description": "The ID which uniquely identifies this sample field",
+                    "description": "samples",
                     "referencedAttribute": "plate",
                     "relationshipType": "one-to-many",
                     "items": {
@@ -105,11 +95,13 @@
                 }
             },
             "required": [
-                "plateDbId",
                 "plateName"
             ],
             "title": "Plate",
-            "type": "object"
+            "type": "object",
+            "brapi-metadata": {
+                "primaryModel": true
+            }
         }
     },
     "$id": "https://brapi.org/Specification/BrAPI-Schema/BrAPI-Genotyping/Plate.json",

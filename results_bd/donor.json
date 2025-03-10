@@ -2,10 +2,6 @@
     "model": "donor",
     "storageType": "sql",
     "attributes": {
-        "donorDbId": {
-            "type": "[ String ]",
-            "description": "the unique identifier for a donor"
-        },
         "donorAccessionNumber": {
             "type": "String",
             "description": "The accession number assigned by the donor\n\nMCPD (v2.1) (DONORNUMB) 23. Identifier assigned to an accession by the donor. Follows ACCENUMB standard."
@@ -14,16 +10,20 @@
             "type": "String",
             "description": "The institute code for the donor institute\n<br/>MCPD (v2.1) (DONORCODE) 22. FAO WIEWS code of the donor institute. Follows INSTCODE standard."
         },
-        "germplasms_IDs": "[ String ]"
+        "donorDbId": {
+            "type": "String",
+            "description": ""
+        },
+        "germplasm_ID": "String"
     },
     "associations": {
-        "germplasms": {
-            "type": "many_to_many",
+        "germplasm": {
+            "type": "many_to_one",
             "implementation": "foreignkeys",
             "reverseAssociation": "donors",
             "target": "germplasm",
             "targetKey": "donors_IDs",
-            "sourceKey": "germplasms_IDs",
+            "sourceKey": "germplasm_ID",
             "keysIn": "donor",
             "targetStorageType": "sql"
         }

@@ -29,7 +29,7 @@ The Python scripts are located in the `methods` subfolder.
 
 #### General Usage:
 ```bash
-python methods/convert.py -i [input-path] -o [output-path] [other command-line arguments]
+python methods/converter.py -i [input-path] -o [output-path] [other command-line arguments]
 ```
 
 #### Command-Line Arguments
@@ -81,73 +81,158 @@ The `Converter` script converts JSON schemas into Zendro data models. Below are 
 #### JSON Schema Requirements
 
 The schema must meet certain characteristics for the converter to function properly. Below is an example schema to help adapt your models to the required input format:  
+1. **Flattened Structure**: Since Zendro does not support deeply nested objects, all complex structures should be flattened, with associations maintaining the relationships between entities.
+1. **Enum Limitations**: The converter currently does not support for certain enums (e.g. LINK). If you'll use a enum regardless, you'll receive the following output:
+    
+    `[Model]	-	Is an enum and is not supported!`
+1. **General structure**:
+    - The schema must include the `$defs` key, where the entire model is defined.  
+    - Inside `$defs`, the model name should be defined, and within the model name, there must be a key called `properties`.  
+    - Inside `properties`, the fields, or attributes ("columns" in relational databases) of the model should be defined. It is not necessary to define an `id` as it can be specified using the `-p` and `-t` arguments of the converter. The data type must be specified, and ideally, a description should also be included so it can be used in the GraphQL schema in Zendro.  
+    - Associations  
+        **Required fields**
+        - **description**: Description of the association. Ideally, a description should be included so it can be used in the GraphQL schema in Zendro.  
+        - **relationshipType**:  The type of relationship between models. The possible values are:
+            - one-to-many  
+            - many-to-many  
+            - one-to-one  
+            - many-to-one  
+        - **$ref**: The path to the related model's definition. This should follow JSON Schema reference syntax.
 
-1. The schema must include the `$defs` key, where the entire model is defined.  
-2. Inside `$defs`, the model name should be defined, and within the model name, there must be a key called `properties`.  
-3. Inside `properties`, the fields, or attributes ("columns" in relational databases) of the model should be defined. It is not necessary to define an `id` as it can be specified using the `-p` and `-t` arguments of the converter. The data type must be specified, and ideally, a description should also be included so it can be used in the GraphQL schema in Zendro.  
-4. Associations must include:  
-   - **title**: Name of the association. How the link between the model and the association is named.
-   - **description**: Description of the association. Ideally, a description should be included so it can be used in the GraphQL schema in Zendro.  
-   - **referencedAttribute**: The attribute in the related model that establishes the connection. 
-   - **relationshipType**:  The type of relationship between models. The possible values are:
-     - one-to-many  
-     - many-to-many  
-     - one-to-one  
-     - many-to-one  
-   - **items**:  
-     - **$ref**: The path to the related model's definition. This should follow JSON Schema reference syntax.
-     - **description**: A brief explanation of the association.
-   - **type**:  Defines the expected data type of the association. 
-     - Default value  
-     - Data type  
+        **Optional fields**
+        - **referencedAttribute**: The attribute in the related model that establishes the connection.
+        - **type**: Defines the expected data type of the association.
+            - Default value
+            - Data type
+1. **Primary key**
+    The converter will handle the primary key if you define a custom one in the schemas or forgott it at all.
+    - Custom
+
+        Input: [RelationshipTest.json](unit-test/RelationshipTest.json)
+
+        Output: [relationshiptest.json](unit-test-results/relationshiptest.json)
+
+    - Forgotten
+
+        Input: [TestAllOf.json](unit-test/TestAllOf.json)
+
+        Output: [testallof.json](unit-test-results/testallof.json)
+
+* Test files for a better overview: [Unit-test](unit-test)
+
+* Output after using the converter: [Unit-test-results](unit-test-results)
 
 ```
 {
     "$defs": {
-        "<model_name>": {
+        "RelationshipTest": {
             "properties": {
-                "<model_id>": {
-                    "description": "",
-                    "type": ""
-                },
-                "<property1>": {
-                    "description": "",
+                "description": {
+                    "description": "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.",
                     "type": [
                         "null",
-                        "<data_type>"
+                        "string"
                     ]
                 },
-                "property2": {
-                    "description": "",
-                    "type": [
-                        "null",
-                        "<data_type>"
-                    ]
+                "relationshipWithoutAnything": {
+                    "description": "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.",
+                    "$ref": "NormalSchema"
                 },
-                "<model_association_1>": {
-                    "title": "<association_name>",
-                    "description": "",
-                    "referencedAttribute": "<model_name>",
-                    "relationshipType": "<one-to-many|many_to_many|one_to_one|many_to_one>",
+		"relationshipWithType": {
+                    "description": "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.",
+                    "$ref": "NormalSchema",
+                    "relationshipType": "one-to-one"
+                },
+		"relationshipWithTypeAndReference": {
+                    "description": "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.",
+                    "$ref": "NormalSchema",
+                    "referencedAttribute": "TestRelationship",
+                    "relationshipType": "one-to-one"
+                },
+		"relationshipManyToMany": {
+                    "description": "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.",
+                    "relationshipType": "many-to-many",
                     "items": {
-                        "$ref": "<associated_model_location>",
-                        "description": ""
+                        "$ref": "TestAllOf"
                     },
                     "type": [
                         "null",
-                        "<data_type>"
+                        "array"
                     ]
+                },
+                "TestId": {
+                    "description": "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.",
+                    "type": "string"
                 }
-            }
+            },
+            "required": [
+                "TestId"
+            ],
+            "title": "RelationshipTest",
+            "type": "object"
         }
     }
+}
+```
+
+Zendro compatible output:
+```json
+{
+    "model": "relationshiptest",
+    "storageType": "sql",
+    "attributes": {
+        "description": {
+            "type": "String",
+            "description": "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua."
+        },
+        "TestDbId": {
+            "type": "String",
+            "description": "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua."
+        },
+        "relationshipWithType_ID": "String",
+        "relationshipWithTypeAndReference_ID": "String",
+        "relationshipManyToMany_IDs": "[ String ]"
+    },
+    "associations": {
+        "relationshipWithType": {
+            "type": "one_to_one",
+            "implementation": "foreignkeys",
+            "reverseAssociation": "relationshipTest",
+            "target": "normalschema",
+            "targetKey": "relationshipTest_ID",
+            "sourceKey": "relationshipWithType_ID",
+            "keysIn": "relationshiptest",
+            "targetStorageType": "sql"
+        },
+        "relationshipWithTypeAndReference": {
+            "type": "one_to_one",
+            "implementation": "foreignkeys",
+            "reverseAssociation": "TestRelationship",
+            "target": "normalschema",
+            "targetKey": "TestRelationship_ID",
+            "sourceKey": "relationshipWithTypeAndReference_ID",
+            "keysIn": "relationshiptest",
+            "targetStorageType": "sql"
+        },
+        "relationshipManyToMany": {
+            "type": "many_to_many",
+            "implementation": "foreignkeys",
+            "reverseAssociation": "relationshipTest",
+            "target": "testallof",
+            "targetKey": "relationshipTest_IDs",
+            "sourceKey": "relationshipManyToMany_IDs",
+            "keysIn": "relationshiptest",
+            "targetStorageType": "sql"
+        }
+    },
+    "internalId": "TestDbId"
 }
 ```
 ---
 
 #### Regular example:
 ```bash
-python convert.py -i "../BrAPI-Schema" -o "../results"
+python converter.py -i "../BrAPI-brapi_input_example" -o "../results"
 ```
 
 JSON Schema input:
@@ -242,7 +327,7 @@ Zendro compatible output:
 
 #### Custom primary key and type:
 ```bash
-python convert.py -i "../BrAPI-Schema" -o "../results" -p "github" -t "Int"
+python methods/converter.py -i "BrAPI-brapi_input_example" -o "results/" -p "github" -t "Int"
 ```
 
 Zendro compatible output:
@@ -251,28 +336,28 @@ Zendro compatible output:
     "model": "season",
     "storageType": "sql",
     "attributes": {
-        "github": {
-            "type": "[ Int ]",
-            "description": "The ID which uniquely identifies a season. "
+        "seasonDbId": {
+            "type": "Int",
+            "description": "The ID which uniquely identifies a season. For backward compatibility it can be a string like '2012', '1957-2004'"
         },
         "seasonName": {
-            "type": "String",
+            "type": "Int",
             "description": "Name of the season. ex. 'Spring', 'Q2', 'Season A', etc."
         },
         "year": {
             "type": "Int",
             "description": "The 4 digit year of the season."
         },
-        "observations_IDs": "[ String ]"
+        "observation_IDs": "[ String ]"
     },
     "associations": {
-        "observations": {
+        "observation": {
             "type": "one_to_many",
             "implementation": "foreignkeys",
             "reverseAssociation": "season",
             "target": "observation",
             "targetKey": "season_ID",
-            "sourceKey": "observations_IDs",
+            "sourceKey": "observation_IDs",
             "keysIn": "season",
             "targetStorageType": "sql"
         }
@@ -280,8 +365,9 @@ Zendro compatible output:
     "internalId": "github"
 }
 ```
-As you can see, the primary key (here `github`) is the custom primary key name `github` and the data type is Integer.
-Each generated data model contains the custom primary key name and is of the specified type.
+As you can see, the primary key (here `github`) is the custom primary key name `github`.
+
+Each generated data model contains the custom primary key name.
 
 ---
 
@@ -311,118 +397,81 @@ All associations/relationships are defined after Zendro's [paired-end foreign ke
 
 ---
 
-## API Reference
+## Program Workflow
 
-#### Packages used
-- `os`
-- `re`
-- `json`
-- `sys`
-- `datetime`, `date` from `datetime`
+#### Main Execution (`main()`)
+
+This is the main function of the script.<br />
+Calls functions to locate JSON schema files, extract models, process their properties, and generate output files.
 
 ---
 
-#### get_files
-Get all json files:
+#### File Handling (`get_files(input_path)`)
 
-```python
-get_files(input_path)
-```
-
-| Parameter | Type     | Description                |
-| :-------- | :------- | :------------------------- |
-| `input_path` | `string` | Path to the input files/directories |
-
-Walks through the input path, searches for json files and extracts the relative path to the json file for the output path.
-
-Function returns all found files in the input hierachy.
+Recursively searches the input directory for .json files and returns a list of valid file paths.
 
 ---
 
-#### get_models
-Get all models:
+#### Model Extraction (`get_models(input_files)`)
 
-```python
-get_models(input_files)
-```
-
-| Parameter | Type     | Description                |
-| :-------- | :------- | :------------------------- |
-| `input_files` | `list` | List of files to extract models from |
-
-Read in the given files and extract all models from it.\n
-Get a formatted dictionary of data models included in those files.
-
-Function returns the formatted dictionary of data models
+- Reads JSON files and extracts models from the `$defs` section.
+- Filters out incompatible models, such as `enum` types.
+- Stores model attributes, associations, and primary keys in dictionaries.
 
 ---
 
-#### get_properties
-Get all items/properties:
-```python
-get_properties(input_model_properties, current_model)
-```
+#### Property Conversion (`get_properties(models)`)
 
-| Parameter | Type     | Description                       |
-| :-------- | :------- | :-------------------------------- |
-| `input_model_properties`      | `dictionary` | Dictionary of all properties included in the current model |
-| `current_model`      | `string` | The name of the current model |
-
-Get a formatted dictionary of data models with Zendro compatible data types and references.\n
-Ready to be writen in json format.
-
-Function returns a formatted dictionary of data models compatible to Zendro.
+- Converts BrAPI properties into Zendro-compatible attributes and associations.
+- Determines primary key settings based on user input or schema patterns (`DbId`).
+- Handles `oneOf` and `allOf` definitions by integrating properties from referenced models.<br />Example `allOf`:<br />&nbsp;&nbsp;Input: [TestAllOf.json](unit-test/TestAllOf.json)<br />&nbsp;&nbsp;Output: [testallof.json](unit-test-results/testallof.json)
 
 ---
 
-#### get_property_type
-Check for Zendro compatible types:
-```python
-get_property_type(input_property)
-```
+#### Association Handling (`get_reverse_association(association)`)
 
-| Parameter | Type     | Description                       |
-| :-------- | :------- | :-------------------------------- |
-| `input_property`      | `dictionary` | An item from a json file |
-
-Function returns a Zendro compatible type or none
+- Maps BrAPI relationship types (`one-to-many`, `many-to-one`, etc.) to Zendro format (`one_to_many`, `many_to_one`, etc).
+- Ensures, that bidirectional associations are properly defined.
 
 ---
 
-#### write_json
-Writes the passed models to their own json file:
+#### Property Type Conversion (`get_property_type(input_property)`)
 
-```python
-write_json(output_models)
-```
-
-| Parameter | Type     | Description                       |
-| :-------- | :------- | :-------------------------------- |
-| `output_models`      | `dictionary` | Dictionary with model definitions compatible to Zendro |
-
-
-This function doesn't return anything.
+- Matches BrAPI types (`string`, `integer`, `boolean`, `number`) with Zendro-compatible types (`String`, `Int`, `Boolean`, `Float`).
+- Supports array definitions (and nested properties).
 
 ---
 
-#### log
-Log a message:
-```python
-log(msg)
-```
-| Parameter | Type     | Description                       |
-| :-------- | :------- | :-------------------------------- |
-| `msg`      | `String` | Message to log |
+#### Output Generation (`write_json(output_models)`)
 
-Writes the message to a log-file. and logs the date and time automatically.
-
-This function doesn't return anything but will give out a text to your console.
+- Formats converted models into JSON files with a standard Zendro structure.
+- Saves the files in the specified output directory.
 
 ---
 
-## Support
+#### Logging (`log(msg)`)
 
-In the current version, the converter does not support:
-- Arrays of any kind, especially also not objects (the only exception are the associations)
-- In the models generated by Zendro it is possible to assign the status `required` to attributes.
-This addition cannot be made before Zendro generates the data models, so it is not possible to give this status to individual attributes using the converter.
+Logs errors and warnings in `Log.txt`, recording timestamps.
+
+---
+
+## Error Handling
+
+- Uses `try-except` blocks to catch file access errors (`OSError`), JSON parsing errors, and unexpected exceptions.
+- Logs relevant information to `Log.txt` for debugging (including timestamp)
+- Exits program in case of critical failures using `sys.exit(1)`.
+
+---
+
+## Notes
+
+- Excludes models with unsopported types (e.g. enum).
+- Handles `oneOf` properties interactively, prompting user input.
+- Supports multiple storage backends with configurable options.
+
+---
+
+## Possible Improvements
+
+- Automatic handling of `oneOf` properties without user input. <br /> This can be implemented, for example, by using command line arguments to decide in advance whether the program should select automatically or whether user input should be required.
+- Enhanced error reporting with detailed exception tracking.

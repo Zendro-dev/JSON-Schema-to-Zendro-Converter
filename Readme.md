@@ -232,7 +232,7 @@ Zendro compatible output:
 
 #### Regular example:
 ```bash
-python converter.py -i "../BrAPI-brapi_input_example" -o "../results"
+python methods/converter.py -i "BrAPI-brapi_input_example" -o "results"
 ```
 
 JSON Schema input:

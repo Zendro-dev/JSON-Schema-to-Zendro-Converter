@@ -232,7 +232,7 @@ Zendro compatible output:
 
 #### Regular example:
 ```bash
-python methods/converter.py -i "BrAPI-brapi_input_example" -o "results"
+python methods/converter.py -i "brapi_input_example" -o "results"
 ```
 
 JSON Schema input:
@@ -327,7 +327,7 @@ Zendro compatible output:
 
 #### Custom primary key and type:
 ```bash
-python methods/converter.py -i "BrAPI-brapi_input_example" -o "results/" -p "github" -t "Int"
+python methods/converter.py -i "brapi_input_example" -o "results/" -p "github" -t "Int"
 ```
 
 Zendro compatible output:
@@ -336,10 +336,6 @@ Zendro compatible output:
     "model": "season",
     "storageType": "sql",
     "attributes": {
-        "seasonDbId": {
-            "type": "Int",
-            "description": "The ID which uniquely identifies a season. For backward compatibility it can be a string like '2012', '1957-2004'"
-        },
         "seasonName": {
             "type": "Int",
             "description": "Name of the season. ex. 'Spring', 'Q2', 'Season A', etc."
@@ -347,6 +343,10 @@ Zendro compatible output:
         "year": {
             "type": "Int",
             "description": "The 4 digit year of the season."
+        },
+        "github": {
+            "type": "Int",
+            "description": "The ID which uniquely identifies a season. For backward compatibility it can be a string like '2012', '1957-2004'"
         },
         "observation_IDs": "[ String ]"
     },
@@ -365,9 +365,7 @@ Zendro compatible output:
     "internalId": "github"
 }
 ```
-As you can see, the primary key (here `github`) is the custom primary key name `github`.
-
-Each generated data model contains the custom primary key name.
+As you can see, the primary key (here `github`) is the custom primary key name `github`. and the data type is Integer. Each generated data model contains the custom primary key name and is of the specified type.
 
 ---
 
